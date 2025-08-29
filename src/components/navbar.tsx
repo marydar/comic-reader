@@ -32,7 +32,7 @@ export function Navbar() {
     return (
         <div className="bg-primary text-primary-foreground text-center h-[70px] w-full flex justify-around items-center">
             <div className="flex justify-center items-center px-4 gap-2">
-                <Link className="text-[32px] px-2" href="/">MarComics</Link>
+                <Link className="text-[24px] px-2 " href="/">MarComics</Link>
                 <Link className="text-[14px] px-5  py-2 bg-white/25 cursor-pointer rounded-xl " href="/">Home </Link>
                 <Link className="text-[14px] px-2" href="/">Browse</Link>
                 <Button onClick={()=>{setOpen(true)}} className="bg-background text-primary-foreground w-sm h-[35px] justify-start hover:bg-background/90 cursor-pointer rounded-3xl" size="sm">
