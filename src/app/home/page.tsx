@@ -1,8 +1,13 @@
 import React from 'react'
+import PopularComics from './popularComics'
+import ForYouComics from './forYouComics'
 
 const HomePage = () => {
   return (
-    <div>HomePage</div>
+    <div>
+      <PopularComics/>
+      <ForYouComics/>
+    </div>
   )
 }
 

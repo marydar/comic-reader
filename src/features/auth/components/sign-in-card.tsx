@@ -50,8 +50,8 @@ export default function SignInCard({setIsSignIn}: SignInCardProps) {
     }
   return (
     <Card className='w-full h-full bg-background text-foreground border-primary p-0 rounded-2xl'>
-        <CardHeader className='flex flex-col p-4 items-center justify-between bg-primary text-primary-foreground rounded-t-2xl'>
-            <CardTitle className='text-2xl font-bold'>Sign in</CardTitle>
+        <CardHeader className='py-4 flex flex-col px-2 items-center justify-between bg-primary text-primary-foreground rounded-t-2xl'>
+            <CardTitle className='text-xl font-bold'>Sign in</CardTitle>
             <CardDescription className='text-xs text-primary-foreground/80'>
                 use your email or another service to continue
             </CardDescription>
