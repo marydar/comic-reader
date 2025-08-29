@@ -25,7 +25,7 @@ import { useState } from "react"
 
 
 import  Link  from "next/link"
-import { UserButton } from "./user-button"
+import { UserButton } from "../features/auth/components/user-button"
  
 export function Navbar() {
     const [open, setOpen] = useState(false)
