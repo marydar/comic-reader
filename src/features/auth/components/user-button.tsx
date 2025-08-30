@@ -7,8 +7,9 @@ import { Loader, LogOut, UserCircle, LogIn } from 'lucide-react'
 import { useAuthActions } from '@convex-dev/auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { cn } from '@/lib/utils'
 
-export const UserButton = () => {
+export const UserButton = ({variant}: {variant?: "primary" | "background"}) => {
     const {signOut} = useAuthActions();
     const router = useRouter();
     const {data, isLoading} = useCurrentUser();
@@ -41,7 +42,7 @@ export const UserButton = () => {
             <DropdownMenuTrigger className='outline-none relative'>
                 <Avatar className='size-10 hover:opacity-75 transition hover:cursor-pointer'>
                     <AvatarImage src={userImage} alt={userName}/>
-                    <AvatarFallback className='bg-background text-primary'>
+                    <AvatarFallback className={cn('bg-background text-primary', variant === "primary" ? "bg-primary text-primary-foreground" : "bg-background text-primary")}>
                         {avavtarFallback}
                     </AvatarFallback>
                 </Avatar>
