@@ -5,7 +5,7 @@ const ForYouComics = () => {
   return (
     <div className='flex justify-center w-full '>
     <div className=' py-1 md:py-8 flex flex-col  h-[300px] md:h-[600px]'>
-        <p className=' px-12  text-foreground text-l md:text-2xl text-left'>For you</p>
+        <p className='md:px-12 px-4  text-foreground text-l md:text-2xl text-left'>For you</p>
         <div className='p-1 md:p-4 flex justify-center'>
           <ComicGridRow/>
         </div>

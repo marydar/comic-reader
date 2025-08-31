@@ -24,7 +24,7 @@ const PublishComicPage = () => {
   }
   return (
     <div className='flex justify-center w-full'>
-      <div className='flex flex-col  w-[300px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl border-primary border-1 my-10'>
+      <div className='flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl border-primary border-1 my-4 md:my-10'>
         <div className='bg-primary/40 rounded-t-2xl text-center text-[12px] md:text-[18px] text-foreground p-4 md:p-4 flex justify-center'>
           Publish your new comic
         </div>
@@ -33,14 +33,14 @@ const PublishComicPage = () => {
             <UploadCard title='Comic Cover' description='mage size must be 720x1024. Image must be less than 500KB. Only JPG, JPEG, and PNG formats are allowed.' onFileSelect={(file) =>{setSelectedCover(file)}}/>
             <UploadCard title='Cover Header' description='mage size must be 1500x500. Image must be less than 500KB. Only JPG, JPEG, and PNG formats are allowed.' onFileSelect={(file) =>{setSelectedHeader(file)}}/>
           </div>
-          <form onSubmit={handlePublishComic} className='space-y-2.5  p-12 gap-12 relative '>
+          <form onSubmit={handlePublishComic} className='space-y-2.5 p-6  md:p-12 gap-12 relative '>
                 <p>Title</p>
                 <Input 
                     disabled={false}
                     value={title}
                     onChange={(e) =>{setTitle(e.target.value)}}
                     placeholder="title"
-                    className='bg-background text-foreground border-primary p-4 md:w-[450px] lg:w-[750px] lg:h-[50px] border-1 rounded-2xl text-[14px] md:text-[14px]'
+                    className='bg-background text-foreground border-primary p-4 w-[300px] md:w-[450px] lg:w-[750px] lg:h-[50px] border-1 rounded-2xl text-[14px] md:text-[14px]'
                     required
                 />
                 <p>Author</p>
@@ -49,7 +49,7 @@ const PublishComicPage = () => {
                     value={author}
                     onChange={(e) =>{setAuthor(e.target.value)}}
                     placeholder="author "
-                    className='bg-background text-foreground border-primary p-4 md:w-[450px] lg:w-[750px] lg:h-[50px] border-1 rounded-2xl text-[14px] md:text-[14px]'
+                    className='bg-background text-foreground border-primary p-4 w-[300px] md:w-[450px] lg:w-[750px] lg:h-[50px] border-1 rounded-2xl text-[14px] md:text-[14px]'
                     required
                 />
                 <p>Description</p>
@@ -58,7 +58,7 @@ const PublishComicPage = () => {
                     value={description}
                     onChange={(e) =>{setDescription(e.target.value)}}
                     placeholder="desribe your comic"
-                    className=' bg-background text-foreground border-primary p-4 md:w-[450px]  lg:w-[750px] lg:h-[100px] border-1 rounded-2xl placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary focus-visible:ring-[1px] text-[14px] md:text-[14px]'
+                    className=' bg-background text-foreground border-primary p-4 w-[300px] h-[100px] md:w-[450px]  lg:w-[750px] lg:h-[100px] border-1 rounded-2xl placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary focus-visible:ring-[1px] text-[14px] md:text-[14px]'
                     required
                 />
                 <p>Select Genres</p>

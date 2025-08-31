@@ -127,7 +127,23 @@ export function Navbar() {
                 </DropdownMenuItem>
                     <Separator/>
                 <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    <Link className="text-[14px] px-2" href="/">Publish</Link>
+                    <DropdownMenu modal={false}>
+            <DropdownMenuTrigger className='outline-none relative'>
+                <div className="flex items-center cursor-pointer">
+                    <ChevronDown className="text-primary-foreground cursor-pointer text-xl" />
+                    <p className="text-[14px] px-2">Publish </p>
+                </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
+                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                    <Link className="text-[12px] p-2" href="/publishComic">Publish new Comic</Link>
+                    <Separator/>
+                </DropdownMenuItem>
+                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                    <Link className="text-[12px] p-2" href="/">Publish new chapter</Link>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
                 </DropdownMenuItem>
                     <Separator/>
                 <DropdownMenuItem className='h-14 bg-background text-primary flex justify-left'>
