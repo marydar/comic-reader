@@ -90,7 +90,7 @@ export function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
                 <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    <Link className="text-[12px] p-2" href="/">Publish new Comic</Link>
+                    <Link className="text-[12px] p-2" href="/publishComic">Publish new Comic</Link>
                     <Separator/>
                 </DropdownMenuItem>
                 <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
