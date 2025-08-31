@@ -12,6 +12,7 @@ const schema = defineSchema({
     author: v.string(),
     description: v.string(),
     thumbnail: v.id("_storage"),
+    header: v.id("_storage"),
     creatorId: v.id("users"),
   })
   .index("by_creator", ["creatorId"]),
