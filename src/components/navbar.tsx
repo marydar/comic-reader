@@ -110,24 +110,26 @@ export function Navbar() {
             <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
                 <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
                     <Link className="text-[14px] px-2" href="/">Home</Link>
-                    <Separator/>
                 </DropdownMenuItem>
+                    <Separator/>
                 <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
                     <Link className="text-[14px] px-2" href="/">Browse</Link>
-                    <Separator/>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    {/* <Button onClick={()=>{setOpen(true)}} className="bg-background text-primary-foreground w-sm h-[35px] justify-start hover:bg-background/90 cursor-pointer rounded-3xl" size="sm">
-                        <Search className="mr-2 text-primary" />
-                        <span className="text-primary">Search</span>
-                    </Button> */}
-                     <Link className="text-[14px] px-2" href="/">Search</Link>
                     <Separator/>
+                <DropdownMenuItem className='h-10 bg-background text-primary flex justify-left ' onClick={()=>{setOpen(true)}}>
+                    {/* <div className="flex justify-between  bg-background text-primary" onClick={()=>{setOpen(true)}}> */}
+                        {/* <div className="flex text-left bg-amber-700 pr-2"> */}
+                        <Search className=" text-primary"/>
+                        {/* </div> */}
+                        
+                        <p className="text-primary px-5">Search</p>
+                    {/* </div> */}
                 </DropdownMenuItem>
+                    <Separator/>
                 <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
                     <Link className="text-[14px] px-2" href="/">Publish</Link>
-                    <Separator/>
                 </DropdownMenuItem>
+                    <Separator/>
                 <DropdownMenuItem className='h-14 bg-background text-primary flex justify-left'>
                     <UserButton variant="primary" />
                     <p className="px-2">User</p>

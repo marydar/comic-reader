@@ -6,7 +6,7 @@ import NavigateBefore from "@/components/navigate-before"
 
 const PopularComics = () => {
   return (
-    <div className='p-10 flex w-full h-[200px] md:h-[700px] text-foreground text-center'>
+    <div className='lg:p-10 p-4 md:pt-6 flex w-full h-[200px] md:h-[400px]  lg:h-[700px] text-foreground text-center'>
         <div className='bg-blue-950 w-full relative rounded-3xl'>
             <Image src={myImage} alt={"comic1"} className='w-full  object-cover h-full rounded-4xl'/>
             <div className='w-full h-[50px] md:h-[100px]  absolute bottom-1 flex justify-between items-center px-8 md:px-12 py-4'>

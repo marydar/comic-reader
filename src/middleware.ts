@@ -9,7 +9,7 @@ const isAuthPage = createRouteMatcher(["/auth"]);
  
 export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   if (isAuthPage(request) && (await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, "/home");
+    return nextjsMiddlewareRedirect(request, "/");
   }
   // if (isSignInPage(request) && (await isAuthenticatedNextjs())) {
   //   return nextjsMiddlewareRedirect(request, "/auth");
