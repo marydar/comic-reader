@@ -21,6 +21,7 @@ import { useState } from "react"
 import { MenuIcon } from "lucide-react"
 import { ChevronDownCircle } from "lucide-react"
 import { ChevronDown } from "lucide-react"
+import { useCurrentUser } from "@/features/auth/api/use-current-user"
 
 
 
@@ -30,6 +31,7 @@ import { Separator } from "./ui/separator"
  
 export function Navbar() {
     const [open, setOpen] = useState(false)
+    const {data, isLoading} = useCurrentUser();
     return (
         <div className="bg-primary text-primary-foreground text-center h-[70px] w-full flex justify-around items-center">
             <div className="flex justify-center items-center px-4 gap-2 ">
@@ -81,23 +83,25 @@ export function Navbar() {
                 </NavigationMenu>
             </div> */}
             <div className="hidden md:flex justify-center items-center px-4 gap-4 ">
-                <DropdownMenu modal={false}>
-            <DropdownMenuTrigger className='outline-none relative'>
-                <div className="flex items-center cursor-pointer">
-                    <ChevronDown className="text-primary-foreground cursor-pointer text-xl" />
-                    <p className="text-[14px] px-2">Publish </p>
-                </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
-                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    <Link className="text-[12px] p-2" href="/publishComic">Publish new Comic</Link>
-                    <Separator/>
-                </DropdownMenuItem>
-                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    <Link className="text-[12px] p-2" href="/">Publish new chapter</Link>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+                {data &&
+                        <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger className='outline-none relative'>
+                        <div className="flex items-center cursor-pointer">
+                            <ChevronDown className="text-primary-foreground cursor-pointer text-xl" />
+                            <p className="text-[14px] px-2">Publish </p>
+                        </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
+                        <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                            <Link className="text-[12px] p-2" href="/publishComic">Publish new Comic</Link>
+                            <Separator/>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                            <Link className="text-[12px] p-2" href="/">Publish new chapter</Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                }
                 
                 <UserButton variant="background"/>
                 {/* <Link className="text-[14px] px-5  py-3 text-primary bg-background hover:bg-background/90 cursor-pointer rounded-xl " href="/">Login</Link> */}
@@ -126,25 +130,27 @@ export function Navbar() {
                     {/* </div> */}
                 </DropdownMenuItem>
                     <Separator/>
+                    {data &&
                 <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    <DropdownMenu modal={false}>
-            <DropdownMenuTrigger className='outline-none relative'>
-                <div className="flex items-center cursor-pointer">
-                    <ChevronDown className="text-primary-foreground cursor-pointer text-xl" />
-                    <p className="text-[14px] px-2">Publish </p>
-                </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
-                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    <Link className="text-[12px] p-2" href="/publishComic">Publish new Comic</Link>
-                    <Separator/>
+                        <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger className='outline-none relative'>
+                            <div className="flex items-center cursor-pointer">
+                                <ChevronDown className="text-primary-foreground cursor-pointer text-xl" />
+                                <p className="text-[14px] px-2">Publish </p>
+                            </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
+                            <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                                <Link className="text-[12px] p-2" href="/publishComic">Publish new Comic</Link>
+                                <Separator/>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                                <Link className="text-[12px] p-2" href="/">Publish new chapter</Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    <Link className="text-[12px] p-2" href="/">Publish new chapter</Link>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-                </DropdownMenuItem>
+}               
                     <Separator/>
                 <DropdownMenuItem className='h-14 bg-background text-primary flex justify-left'>
                     <UserButton variant="primary" />
