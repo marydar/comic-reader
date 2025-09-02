@@ -33,7 +33,7 @@ const popularByCategory = () => {
             <div className=' md:px-[50px]  px-4  grid  grid-cols-3 md:grid-cols-6 lg:grid-cols-10 gap-2 my-4'>
                 {genres.map((genre) => (
                     (
-                    <div onClick={()=>handleGenreClick(genre)} className='cursor-pointer'>
+                    <div key={genre} onClick={()=>handleGenreClick(genre)} className='cursor-pointer'>
                       <GenreButton key={genre} variant={selectedGenre === genre ? 'active' : 'not-active'} genre={genre}/>
                     </div>
                     )
