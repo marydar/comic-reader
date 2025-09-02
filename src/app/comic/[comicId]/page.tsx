@@ -1,0 +1,103 @@
+"use client"
+import React from 'react'
+import { useComicId } from '@/hooks/use-comic-id'
+import { useGetComicById } from '@/features/comic/api/use-get-comic-by-id'
+import { Bookmark, Loader } from 'lucide-react'
+import GenreButton from '@/components/genre-button'
+import { FaSubscript } from 'react-icons/fa'
+import { Eye } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { MdPlaylistAdd } from 'react-icons/md'
+import { RiUserFollowLine } from "react-icons/ri";
+import { HiArrowsUpDown } from "react-icons/hi2";
+import { useGetAllComics } from '@/features/comic/api/use-get-all-comics'
+import ComicGridRow from '@/features/comic/components/comic-grid-row'
+
+
+
+const ComicPage = () => {
+  const comicId = useComicId()
+  const {data, isLoading} = useGetComicById({comicId})
+  const {data:allComics, isLoading:isLoadingAllComics} = useGetAllComics()
+  if(isLoading) return <div><Loader/></div>
+  if(!data) return <div>No comic found</div>
+    if(isLoading) return <Loader/>
+    if(!data) return <div>no data</div>
+  
+    const comics = (allComics ?? []).map((comic) => ({
+      _id: comic._id,
+      title: comic.title,
+      thumbnail: comic.thumbnail, // safe fallback
+    }));
+  return (
+    <div className='flex justify-center w-full'>
+      <div className='flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl  my-4 md:my-10'>
+        <div className='flex w-full flex-col md:flex-row gap-4'>
+          <img src={data?.thumbnail ? data?.thumbnail : undefined} alt={"comic1"} className='object-cover  h-full rounded-3xl w-[400px] md:w-[300px] lg:w-[350px] p-4'/>
+          <div className='flex flex-col px-4 gap-2  '>
+                <p className='text-[18px] md:text-[28px] text-foreground '>{data.title}</p>
+                <p className='text-[12px] md:text-[14px] text-foreground/70 '>Author: {data.author}</p>
+                <div className=' grid  grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 my-4'>
+                    {data.genres.map((genre : string) => (
+                    <GenreButton key={genre} genre={genre} variant='show'/>
+                    ))}
+                </div>
+                <div className='flex justify-items-start items-start gap-2 md:gap-4 '>
+                    <div className='flex items-center' >
+                        <Eye className='text-primary'/>
+                        <span className='text-foreground text-[10px] md:text-[12px] px-1 '>230M</span>
+                    </div>
+                    <div className='flex items-center'>
+                        <RiUserFollowLine className='text-primary'/>
+                        <span className='text-foreground text-[10px] md:text-[12px] px-1'>230M</span>
+                    </div>
+                </div>
+                <p className='text-foreground text-[12px] md:text-[16px] px-1'>Description</p>
+                <div className='overflow-hidden h-[200px] md:w-[700px] w-[300px] '>
+                    <p className='text-foreground/70 text-[12px] md:text-[14px] px-1'>{data.description}</p>
+                </div>
+                <div className='flex w-full justify-baseline items-center gap-4 py-4 flex-col md:flex-row'>
+                <Button className='bg-primary md:w-[200px] w-full'>
+                    <Bookmark className='text-primary-foreground'/>
+                    Continue reading
+                </Button>
+                <Button className='bg-primary md:w-[200px] w-full'>
+                    <MdPlaylistAdd className='text-primary-foreground'/>
+                    Add to playlist
+                </Button>
+                {/* subscribe */}
+                <Button className='bg-primary md:w-[200px] w-full'>
+                    <RiUserFollowLine className='text-primary-foreground'/>
+                    Subscribe
+                </Button>
+                
+                </div>
+              </div>
+        </div>
+        <div className='flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl border-primary border-1 my-4 md:my-10 max-h-[500px] md:max-h-[800px] '>
+            <div className=' bg-primary/40 rounded-t-2xl text-center text-[12px] md:text-[18px] text-foreground p-4 md:p-4 flex justify-between items-center '>
+            <div className='px-4'>
+                <p>Chapters</p>
+                <p className='text-[10px] md:text-[12px] text-foreground/70 text-left'>23</p>
+            </div>  
+            <div className='px-4'>
+                <HiArrowsUpDown className='text-foreground text-2xl'/>  
+            </div>
+            </div>
+            <div>
+                <p className='text-[12px] md:text-[14px] text-foreground/70 p-4 text-center'>no chapters available</p>
+            </div>
+        </div>
+        <div className=' py-1 md:py-8 flex flex-col  h-[300px] md:h-[600px]'>
+            <p className='md:px-12 px-4  text-foreground text-l md:text-2xl text-left'>You may also like</p>
+            <div className='p-1 md:p-4 flex justify-center'>
+                <ComicGridRow comics={comics}/>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
+export default ComicPage

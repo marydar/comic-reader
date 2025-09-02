@@ -5,10 +5,15 @@ import {
 } from "@convex-dev/auth/nextjs/server";
  
 const isAuthPage = createRouteMatcher(["/auth"]);
+const isPublishPage = createRouteMatcher(["/publishComic"]);
+
 // const isProtectedRoute = createRouteMatcher(["/"]);
  
 export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   if (isAuthPage(request) && (await convexAuth.isAuthenticated())) {
+    return nextjsMiddlewareRedirect(request, "/");
+  }
+  if (isPublishPage(request) && !(await convexAuth.isAuthenticated())) {
     return nextjsMiddlewareRedirect(request, "/");
   }
   // if (isSignInPage(request) && (await isAuthenticatedNextjs())) {

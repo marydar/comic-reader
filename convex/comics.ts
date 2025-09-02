@@ -87,3 +87,23 @@ export const getAllComics = query({
     return comicsWithUrls;
   },
 });
+
+export const getComicById = query({
+  args: {
+    comicId: v.id("comics"),
+  },
+  handler: async (ctx, args) => {
+    const comic = await ctx.db.get( args.comicId);
+    if (!comic) throw new Error("Comic not found");
+    const comicGenres = await ctx.db
+      .query("comicGenres")
+      .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+      .collect();
+    return {
+      ...comic,
+      thumbnail: await ctx.storage.getUrl(comic.thumbnail),
+      header: await ctx.storage.getUrl(comic.header),
+      genres: comicGenres.map((genre) => genre.genre),
+    };
+  },
+});

@@ -9,6 +9,7 @@ import { Loader } from 'lucide-react'
 import { useState } from 'react'
 import { api } from "../../../convex/_generated/api";
 import { Id } from '../../../convex/_generated/dataModel'
+import Link from 'next/link'
 
 
 const PopularComics = () => {
@@ -25,6 +26,7 @@ const PopularComics = () => {
         return <div>No comics available</div>;
     }
     const handleNext = () => {
+    
     setCurrentIndex((prev) => (prev + 1) % comics.length); // loops back to start
   };
 
@@ -39,7 +41,9 @@ const PopularComics = () => {
   return (
     <div className='lg:p-10 p-4 md:pt-6 flex w-full h-[200px] md:h-[400px]  lg:h-[700px] text-foreground text-center cursor-grab'>
         <div className='bg-blue-950 w-full relative rounded-3xl'>
-            <img src={currentComic?.header ? currentComic?.header : undefined} alt={"comic1"} className='w-full object-fill  h-full rounded-4xl'/>
+            <Link href={`/comic/${currentComic?.id}`}>
+            <img src={currentComic?.header ? currentComic?.header : undefined} alt={"comic1"} className='w-full object-cover  h-full rounded-3xl'/>
+            </Link>
             <div className='w-full h-[50px] md:h-[100px]  absolute bottom-1 flex justify-between items-center px-8 md:px-12 py-4'>
                 <div className=' min-w-[100px] h-[20px] md:min-w-[500px] md:h-[60px] bg-primary/50 rounded-4xl text-foreground/90 text-left text-[8px] md:text-[22px] truncate  px-2 md:px-8 flex  items-center'>
                     {currentComic?.title}

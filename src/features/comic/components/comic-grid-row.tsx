@@ -47,6 +47,7 @@ export default function ComicGridRow({ comics }: ComicGridRowProps) {
                 
                 <ComicCard 
                 key={comic._id}
+                _id={comic._id}
                 title={comic.title}
                 views={230}
                 thumbnail={comic.thumbnail}
