@@ -42,7 +42,7 @@ export default function ComicGridRow({ comics }: ComicGridRowProps) {
         <div className='hidden md:flex' onClick={()=>handlePrev()}>
         <NavigateBefore/>
         </div>
-        <div className='flex  gap-2 md:gap-8 w-[310px] md:w-[600px] lg:w-[1100px] overflow-scroll md:overflow-hidden'>
+        <div className='flex  gap-2 md:gap-8 w-[310px] md:w-[600px] lg:w-[1100px] overflow-scroll scrollbar '>
             {chanegedOrderComics?.map((comic, index) => (
                 
                 <ComicCard 

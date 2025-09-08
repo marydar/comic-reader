@@ -53,6 +53,24 @@
   --font-size-title: var(48px)
 }
 
+.scrollbar::-webkit-scrollbar {
+  width: 2px;
+  height: 0px;
+  
+
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #A3C9E2;
+  border-radius: 10px;
+  /* height: 2px; */
+}
+
+
 :root {
   --radius: 0.625rem;
   --background: oklch(95.514% 0.00011 271.152);

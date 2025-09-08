@@ -37,24 +37,26 @@ const ComicPage = () => {
           <div className='flex flex-col px-4 gap-2  '>
                 <p className='text-[18px] md:text-[28px] text-foreground '>{data.title}</p>
                 <p className='text-[12px] md:text-[14px] text-foreground/70 '>Author: {data.author}</p>
-                <div className=' grid  grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 my-4'>
+                <div className=' grid  grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 my-4 w-[300px] md:w-[600px] '>
                     {data.genres.map((genre : string) => (
                     <GenreButton key={genre} genre={genre} variant='show'/>
                     ))}
+                    
+                    
                 </div>
-                <div className='flex justify-items-start items-start gap-2 md:gap-4 '>
-                    <div className='flex items-center' >
-                        <Eye className='text-primary'/>
+                <div className='flex justify-left items-start gap-2 md:gap-4 '>
+                    <div className='flex items-center ' >
+                        <Eye className='text-primary text-2xl'/>
                         <span className='text-foreground text-[10px] md:text-[12px] px-1 '>230M</span>
                     </div>
-                    <div className='flex items-center'>
-                        <RiUserFollowLine className='text-primary'/>
+                    <div className='flex items-center '>
+                        <RiUserFollowLine className='text-primary text-2xl'/>
                         <span className='text-foreground text-[10px] md:text-[12px] px-1'>230M</span>
                     </div>
                 </div>
                 <p className='text-foreground text-[12px] md:text-[16px] px-1'>Description</p>
-                <div className='overflow-hidden h-[200px] md:w-[700px] w-[300px] '>
-                    <p className='text-foreground/70 text-[12px] md:text-[14px] px-1'>{data.description}</p>
+                <div className='overflow-scroll h-[200px] md:w-[700px] w-[300px] scrollbar' >
+                    <p className='text-foreground/70 text-[12px] md:text-[14px] px-1'>{data.description}{data.description}{data.description}{data.description}</p>
                 </div>
                 <div className='flex w-full justify-baseline items-center gap-4 py-4 flex-col md:flex-row'>
                 <Button className='bg-primary md:w-[200px] w-full'>

@@ -21,7 +21,7 @@ export default function GenreSelector({ selectedGenres, setSelectedGenres }: Gen
   return (
     <div className=' grid  grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 my-4'>
         {genres.map((genre) => (
-            <div onClick={() => toggleGenre(genre)}>
+            <div  key={genre} onClick={() => toggleGenre(genre)}>
                 <GenreButton key={genre} variant={selectedGenres.includes(genre) ? "active" : "not-active"} genre={genre} />   
             </div>
         ))}

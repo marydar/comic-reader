@@ -17,28 +17,44 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { Search } from "lucide-react"
-import { useState } from "react"
+import { use, useState } from "react"
 import { MenuIcon } from "lucide-react"
 import { ChevronDownCircle } from "lucide-react"
 import { ChevronDown } from "lucide-react"
 import { useCurrentUser } from "@/features/auth/api/use-current-user"
-
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 
 import  Link  from "next/link"
 import { UserButton } from "../features/auth/components/user-button"
 import { Separator } from "./ui/separator"
- 
+
+
 export function Navbar() {
+    const pathname = usePathname();
+
+    // map routes to isActive values
+    const getActive = (path: string) => {
+        if (path === "/home") return "home";
+        if (path.startsWith("/browse")) return "browse";
+        if (path.startsWith("/publishComic")) return "publishComic";
+        return null;
+    };
+
+    const isActive = getActive(pathname);
     const [open, setOpen] = useState(false)
     const {data, isLoading} = useCurrentUser();
+    
+    
     return (
         <div className="bg-primary text-primary-foreground text-center h-[70px] w-full flex justify-around items-center">
-            <div className="flex justify-center items-center px-4 gap-2 ">
+            <div className="flex  px-8 w-full">
+            <div className="flex justify-left items-center gap-2 w-full ">
                 <Link className="text-[24px] px-2 " href="/">MarComics</Link>
                 <div className=" justify-center items-center px-4 gap-2 hidden md:flex">
-                    <Link className="text-[14px] px-5  py-2 bg-white/25 cursor-pointer rounded-xl " href="/">Home </Link>
-                    <Link className="text-[14px] px-2" href="/">Browse</Link>
+                    <Link className={cn("text-[14px] px-5  py-2  cursor-pointer rounded-xl ", isActive === "home" && "bg-white/25")} href="/home">Home </Link>
+                    <Link className={cn("text-[14px] px-5  py-2  cursor-pointer rounded-xl", isActive === "browse" && "bg-white/25")} href="/browse">Browse</Link>
                     <Button onClick={()=>{setOpen(true)}} className="bg-background text-primary-foreground w-sm h-[35px] justify-start hover:bg-background/90 cursor-pointer rounded-3xl" size="sm">
                         <Search className="mr-2 text-primary" />
                         <span className="text-primary">Search</span>
@@ -85,8 +101,8 @@ export function Navbar() {
             <div className="hidden md:flex justify-center items-center px-4 gap-4 ">
                 {data &&
                         <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger className='outline-none relative'>
-                        <div className="flex items-center cursor-pointer">
+                    <DropdownMenuTrigger className='outline-none relative '>
+                        <div className={cn ("flex items-center cursor-pointer px-5  py-2 rounded-xl", isActive === "publishComic" && "bg-white/25")}>
                             <ChevronDown className="text-primary-foreground cursor-pointer text-xl" />
                             <p className="text-[14px] px-2">Publish </p>
                         </div>
@@ -106,7 +122,7 @@ export function Navbar() {
                 <UserButton variant="background"/>
                 {/* <Link className="text-[14px] px-5  py-3 text-primary bg-background hover:bg-background/90 cursor-pointer rounded-xl " href="/">Login</Link> */}
             </div>
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center justify-center">
             <DropdownMenu modal={false}>
             <DropdownMenuTrigger className='outline-none relative'>
                 <MenuIcon className="text-primary-foreground text-[24px] cursor-pointer md:hidden" />
@@ -117,7 +133,7 @@ export function Navbar() {
                 </DropdownMenuItem>
                     <Separator/>
                 <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                    <Link className="text-[14px] px-2" href="/">Browse</Link>
+                    <Link className="text-[14px] px-2" href="/browse">Browse</Link>
                 </DropdownMenuItem>
                     <Separator/>
                 <DropdownMenuItem className='h-10 bg-background text-primary flex justify-left ' onClick={()=>{setOpen(true)}}>
@@ -159,6 +175,7 @@ export function Navbar() {
             </DropdownMenuContent>
         </DropdownMenu>
         </div> 
+        </div>
         </div>
     )
 }
