@@ -37,7 +37,7 @@ const ComicPage = () => {
           <div className='flex flex-col px-4 gap-2  '>
                 <p className='text-[18px] md:text-[28px] text-foreground '>{data.title}</p>
                 <p className='text-[12px] md:text-[14px] text-foreground/70 '>Author: {data.author}</p>
-                <div className=' grid  grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 my-4 w-[300px] md:w-[600px] '>
+                <div className=' grid  grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-4 my-4 '>
                     {data.genres.map((genre : string) => (
                     <GenreButton key={genre} genre={genre} variant='show'/>
                     ))}

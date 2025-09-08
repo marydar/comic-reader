@@ -55,7 +55,7 @@ export function Navbar() {
                 <div className=" justify-center items-center px-4 gap-2 hidden md:flex">
                     <Link className={cn("text-[14px] px-5  py-2  cursor-pointer rounded-xl ", isActive === "home" && "bg-white/25")} href="/home">Home </Link>
                     <Link className={cn("text-[14px] px-5  py-2  cursor-pointer rounded-xl", isActive === "browse" && "bg-white/25")} href="/browse">Browse</Link>
-                    <Button onClick={()=>{setOpen(true)}} className="bg-background text-primary-foreground w-sm h-[35px] justify-start hover:bg-background/90 cursor-pointer rounded-3xl" size="sm">
+                    <Button onClick={()=>{setOpen(true)}} className="bg-background text-primary-foreground lg:w-sm md:w-[200px] h-[35px] justify-start hover:bg-background/90 cursor-pointer rounded-3xl" size="sm">
                         <Search className="mr-2 text-primary" />
                         <span className="text-primary">Search</span>
                     </Button>

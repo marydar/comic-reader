@@ -57,11 +57,11 @@ export default function ComicList({ comics, selectedGenres, setSelectedGenres,se
                 <p className='text-[14px] md:text-[24px] text-foreground text-center'>Sort and filter</p>
             </div>
             <Separator className='text-2xl text-foreground'/>
-            <div className={cn('flex w-full flex-col gap-2 py-4 pl-8', showFilter && 'hidden')}>
+            <div className={cn('flex w-full flex-col gap-2 py-4 px-2 md:pl-8 lg:w-[800px]', showFilter && 'hidden')}>
                 {/* sort options */}
                 <p className='text-[14px] md:text-[18px] text-foreground/90 text-left'>Sort by</p>
-                <div className='flex items-center w-[300px] md:w-[600px] lg:w-[1100px] '>
-                    <div className=' grid  grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 my-4'>
+                {/* <div className='flex items-center w-[300px] md:w-[600px] lg:w-[1100px] '> */}
+                    <div className=' grid  grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 my-4'>
                         <div  onClick={()=>handleSortClick(sortOption.views)} className='cursor-pointer'>
                         <GenreButton variant={selectedSort === sortOption.views ? "active" : "not-active"} genre={sortOption.views}/>
                         </div>
@@ -74,15 +74,17 @@ export default function ComicList({ comics, selectedGenres, setSelectedGenres,se
                         <div  onClick={()=>handleSortClick(sortOption.names)} className='cursor-pointer'>
                         <GenreButton variant={selectedSort === sortOption.names ? "active" : "not-active"} genre={sortOption.names}/>
                         </div>
-                    </div>
+                    {/* </div> */}
                 </div>
                 <Separator/>
                 {/* genre selector */}
-                <p className='text-[14px] md:text-[18px] text-foreground/90 text-left'>Filter Genre</p>
-                <div className='flex items-center w-[300px] md:w-[600px] lg:w-[1100px] '>
-                    <GenreSelector selectedGenres={selectedGenres} setSelectedGenres={setSelectedGenres}/>
+                <div className='flex w-full flex-col gap-4 py-4 lg:w-[800px]'>
+                    <p className='text-[14px] md:text-[18px] text-foreground/90 text-left'>Filter Genre</p>
+                    {/* <div className='flex items-center w-full   bg-amber-500'> */}
+                        <GenreSelector selectedGenres={selectedGenres} setSelectedGenres={setSelectedGenres}/>
+                    {/* </div> */}
+                    <Separator/>
                 </div>
-                <Separator/>
                 {/* apply filter */}
                 <Button className=' bg-primary text-primary-foreground p-4  justify-center hover:bg-primary/90 cursor-pointer rounded-3xl md:w-[200px] w-full' disabled={false} onClick={handleFilter}>Apply Filter</Button>
             </div>
