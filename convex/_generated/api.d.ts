@@ -19,6 +19,7 @@ import type * as genres from "../genres.js";
 import type * as http from "../http.js";
 import type * as playlistItem from "../playlistItem.js";
 import type * as playlists from "../playlists.js";
+import type * as subscriptions from "../subscriptions.js";
 import type * as upload from "../upload.js";
 import type * as users from "../users.js";
 
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   playlistItem: typeof playlistItem;
   playlists: typeof playlists;
+  subscriptions: typeof subscriptions;
   upload: typeof upload;
   users: typeof users;
 }>;

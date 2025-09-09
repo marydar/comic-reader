@@ -16,16 +16,35 @@ import ComicGridRow from '@/features/comic/components/comic-grid-row'
 import { useState } from 'react'
 import AddToPlaylistModal from './add-to-playlist'
 import { useCurrentUser } from '@/features/auth/api/use-current-user'
+import { useIsSubscribedByUser } from '@/features/subscription/api/use-is-subscribed-by-user'
+import { useCreateSubscription } from '@/features/subscription/api/use-create-subscription'
+import { useRemoveSubscription } from '@/features/subscription/api/use-remove-subscription'
+import { toast } from 'sonner'
+import { useEffect } from 'react'
 
 
 
 const ComicPage = () => {
   const comicId = useComicId()
+  const currentUser = useCurrentUser()
   const {data, isLoading} = useGetComicById({comicId})
   const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState(false)
   const {data:allComics, isLoading:isLoadingAllComics} = useGetAllComics()
-  const currentUser = useCurrentUser()
-  if(isLoading) return <div><Loader/></div>
+  const {data:isComicSubscribed, isLoading:isLoadingIsComicSubscribed} = useIsSubscribedByUser({userId:currentUser?.data?._id, comicId})
+  const {mutate:createSubscription, isPending:isPendingCreateSubscription} = useCreateSubscription()
+  const {mutate:removeSubscription, isPending:isPendingRemoveSubscription} = useRemoveSubscription()
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  useEffect(() => {
+    if (currentUser?.data) {
+      if(isComicSubscribed){
+        setIsSubscribed(true)
+      }
+      else{
+        setIsSubscribed(false)
+      }
+    }
+  }, [currentUser, comicId]);
+  if(isLoading ) return <div><Loader/></div>
   if(!data) return <div>No comic found</div>
     if(isLoading) return <Loader/>
     if(!data) return <div>no data</div>
@@ -35,6 +54,35 @@ const ComicPage = () => {
       title: comic.title,
       thumbnail: comic.thumbnail, // safe fallback
     }));
+    const handleSubscribe = async () => {
+      if(!currentUser.data) return
+      if(isSubscribed){
+        await removeSubscription({
+          comicId,
+        },{
+          onSuccess: (data)=>{
+            toast.success("comic unsubscribed")
+            setIsSubscribed(false)
+          },
+          onError: (error)=>{
+            toast.error("could not unsubscribe")
+          },
+        }
+      )}
+      else{
+        await createSubscription({
+          comicId,
+        },{
+          onSuccess: (data)=>{
+            toast.success("comic subscribed")
+            setIsSubscribed(true)
+          },
+          onError: (error)=>{
+            toast.error("could not subscribe")
+          },
+        }
+      )}
+    }
   return (
     <div className='flex justify-center w-full'>
       <AddToPlaylistModal open={showAddToPlaylistModal} onOpenChange={setShowAddToPlaylistModal}/>
@@ -76,9 +124,10 @@ const ComicPage = () => {
                     Add to playlist
                 </Button>
                 {/* subscribe */}
-                <Button className='bg-primary md:w-[200px] w-full cursor-pointer' disabled={!currentUser.data}>
+                <Button className='bg-primary md:w-[200px] w-full cursor-pointer' disabled={!currentUser.data} onClick={handleSubscribe}>
                     <RiUserFollowLine className='text-primary-foreground'/>
-                    Subscribe
+                    {isSubscribed ? "subscribed" : "Subscribe"}
+                    
                 </Button>
                 
                 </div>

@@ -39,6 +39,15 @@ const schema = defineSchema({
   .index("by_playlist", ["playlistId"])
   .index("by_comic", ["comicId"])
   .index("by_comic_and_playlist", ["comicId", "playlistId"]),
+
+  subscriptions: defineTable({
+    userId: v.id("users"),
+    comicId: v.id("comics"),
+    // Your other columns...
+  })
+  .index("by_user", ["userId"])
+  .index("by_comic", ["comicId"])
+  .index("by_user_and_comic", ["userId", "comicId"]),
   // Your other tables...
 });
  
