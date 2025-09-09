@@ -16,12 +16,29 @@ const schema = defineSchema({
     creatorId: v.id("users"),
   })
   .index("by_creator", ["creatorId"]),
+
   comicGenres: defineTable({
     comicId: v.id("comics"),
     genre: genreEnum,
   })
   .index("by_comic", ["comicId"])
   .index("by_genre", ["genre"]),
+
+  playlists: defineTable({
+    name: v.string(),
+    creatorId: v.id("users"),
+    // Your other columns...
+  })
+  .index("by_creator", ["creatorId"]),
+
+  playlistItems: defineTable({
+    playlistId: v.id("playlists"),
+    comicId: v.id("comics"),
+    // Your other columns...
+  })
+  .index("by_playlist", ["playlistId"])
+  .index("by_comic", ["comicId"])
+  .index("by_comic_and_playlist", ["comicId", "playlistId"]),
   // Your other tables...
 });
  

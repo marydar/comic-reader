@@ -1,3 +1,4 @@
+
 "use client"
 import React from 'react'
 import { useComicId } from '@/hooks/use-comic-id'
@@ -12,13 +13,18 @@ import { RiUserFollowLine } from "react-icons/ri";
 import { HiArrowsUpDown } from "react-icons/hi2";
 import { useGetAllComics } from '@/features/comic/api/use-get-all-comics'
 import ComicGridRow from '@/features/comic/components/comic-grid-row'
+import { useState } from 'react'
+import AddToPlaylistModal from './add-to-playlist'
+import { useCurrentUser } from '@/features/auth/api/use-current-user'
 
 
 
 const ComicPage = () => {
   const comicId = useComicId()
   const {data, isLoading} = useGetComicById({comicId})
+  const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState(false)
   const {data:allComics, isLoading:isLoadingAllComics} = useGetAllComics()
+  const currentUser = useCurrentUser()
   if(isLoading) return <div><Loader/></div>
   if(!data) return <div>No comic found</div>
     if(isLoading) return <Loader/>
@@ -31,6 +37,7 @@ const ComicPage = () => {
     }));
   return (
     <div className='flex justify-center w-full'>
+      <AddToPlaylistModal open={showAddToPlaylistModal} onOpenChange={setShowAddToPlaylistModal}/>
       <div className='flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl  my-4 md:my-10'>
         <div className='flex w-full flex-col md:flex-row gap-4'>
           <img src={data?.thumbnail ? data?.thumbnail : undefined} alt={"comic1"} className='object-cover  h-full rounded-3xl w-[400px] md:w-[300px] lg:w-[350px] p-4'/>
@@ -59,16 +66,17 @@ const ComicPage = () => {
                     <p className='text-foreground/70 text-[12px] md:text-[14px] px-1'>{data.description}{data.description}{data.description}{data.description}</p>
                 </div>
                 <div className='flex w-full justify-baseline items-center gap-4 py-4 flex-col md:flex-row'>
-                <Button className='bg-primary md:w-[200px] w-full'>
-                    <Bookmark className='text-primary-foreground'/>
-                    Continue reading
+                <Button className='bg-primary md:w-[200px] w-full cursor-pointer'>
+                  
+                    {currentUser.data && <Bookmark className='text-primary-foreground'/>}
+                    {currentUser.data ? "Continue reading" : "Start reading"}
                 </Button>
-                <Button className='bg-primary md:w-[200px] w-full'>
+                <Button className='bg-primary md:w-[200px] w-full cursor-pointer' onClick={() => setShowAddToPlaylistModal(true)} disabled={!currentUser.data}>
                     <MdPlaylistAdd className='text-primary-foreground'/>
                     Add to playlist
                 </Button>
                 {/* subscribe */}
-                <Button className='bg-primary md:w-[200px] w-full'>
+                <Button className='bg-primary md:w-[200px] w-full cursor-pointer' disabled={!currentUser.data}>
                     <RiUserFollowLine className='text-primary-foreground'/>
                     Subscribe
                 </Button>
