@@ -15,7 +15,11 @@ import Link from 'next/link'
 const PopularComics = () => {
     const {data, isLoading} = useGetAllComics()
     const [currentIndex, setCurrentIndex] = useState(0);
-    if(isLoading) return <Loader/>
+    if(isLoading) return (
+      <div className='h-full w-full flex justify-center items-center'>
+        <Loader/>
+      </div>
+    )
     if(!data) return <div>no data</div>
     const comics = (data ?? []).map((comic) => ({
     id: comic._id,

@@ -10,7 +10,7 @@ interface ComicCardProps {
 }
 export default function ComicCard({_id,title, views, thumbnail}: ComicCardProps) {
   return (
-    <div className='min-w-[150px] h-[240px] md:min-w-[250px] md:h-[400px] bg-primary rounded-2xl cursor-grab'>
+    <div className='min-w-[150px] max-w[150px] h-[240px] md:min-w-[250px] md:max-w-[250px] md:h-[400px] bg-primary rounded-2xl cursor-grab'>
       <Link href={`/comic/${_id}`}>
         <img src={thumbnail? thumbnail: undefined} alt={"comic1"} className='w-full  object-cover h-[200px] md:h-[320px] rounded-t-2xl rounded-b-0'/>
         <div className='flex flex-col justify-between w-full p-1 px-4 md:p-4 md:px-8 gap-0'>

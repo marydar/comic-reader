@@ -6,12 +6,16 @@ import { genres } from '@/components/genres'
 import { useGetAllComics } from '@/features/comic/api/use-get-all-comics'
 import { Loader } from 'lucide-react'
 import { useState } from 'react'
+import { genreEnum } from '../../../convex/genres'
+import { useGetPoplularComicsByGenre } from '@/features/comic/api/use-get-popular-comics-by-genre'
+type Genre = typeof genreEnum.type;
 
 const popularByCategory = () => {
-  const {data, isLoading} = useGetAllComics()
-   const [selectedGenre, setSelectedGenre] = useState<string | null>("Action");
-  if(isLoading) return <Loader/>
-  if(!data) return <div>no data</div>
+  // const {data, isLoading} = useGetAllComics()
+  const [selectedGenre, setSelectedGenre] = useState<string>("Horror");
+  const {data, isLoading} = useGetPoplularComicsByGenre({genre: selectedGenre as Genre});
+  // if(isLoading) return <Loader/>
+  // if(!data) return <div>no data</div>
 
   const comics = (data ?? []).map((comic) => ({
     _id: comic._id,
@@ -22,7 +26,7 @@ const popularByCategory = () => {
   }));
   
   const handleGenreClick = (genre: string) => {
-      setSelectedGenre((prev) => (prev === genre ? null : genre)); 
+      setSelectedGenre((prev) => (genre)); 
       // 👆 click again to reset (toggle off)
     };
   return (
@@ -39,9 +43,15 @@ const popularByCategory = () => {
                     )
                 ))}
              </div>
-            <div className='p-1 md:p-4 flex justify-center'>
+             {isLoading ? (
+              <div className='h-full w-full flex justify-center items-center'>
+                <Loader/>
+              </div>
+             )
+             : (<div className='p-1 md:p-4 flex justify-center'>  
               <ComicGridRow comics={comics}/>
-            </div>
+            </div>)
+}
         </div>
     </div>
 

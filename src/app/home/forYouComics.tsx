@@ -10,7 +10,11 @@ import { useEffect, useState } from 'react'
 
 const ForYouComics = () => {
   const {data, isLoading} = useGetAllComics()
-  if(isLoading) return <Loader/>
+  if(isLoading) return (
+        <div className='h-full w-full flex justify-center items-center'>
+          <Loader/>
+        </div>
+      )
   if(!data) return <div>no data</div>
 
   const comics = (data ?? []).map((comic) => ({

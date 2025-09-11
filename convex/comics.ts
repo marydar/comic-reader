@@ -198,3 +198,32 @@ export const getComics = query({
   },
   
 });
+
+export const getPopularComicsByGenre = query({
+  args: {
+    genre: genreEnum,
+  },
+  handler: async (ctx, args) => {
+    let comics = await ctx.db.query("comics").collect();
+    console.log("genre"+args.genre);
+
+    const comicGenres = await ctx.db
+      .query("comicGenres")
+      .withIndex("by_genre", (q) => q.eq("genre", args.genre))
+      .collect();
+    const comicIds: Id<"comics">[] = comicGenres.map((item) => item.comicId as Id<"comics">);
+    console.log("comicIds : "+comicIds);
+    comics = comics.filter((c) => comicIds.includes(c._id));
+
+    // Map each comic to a new object with headerUrl
+    const comicsWithUrls = await Promise.all(
+      comics.map(async (comic) => ({
+        ...comic,
+        thumbnail: await ctx.storage.getUrl(comic.thumbnail),
+        header: await ctx.storage.getUrl(comic.header),
+      }))
+    );
+
+    return comicsWithUrls;
+  },
+});
