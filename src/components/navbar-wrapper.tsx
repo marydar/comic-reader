@@ -11,4 +11,5 @@ export default function NavbarWrapper() {
 
   if (hideNavbar) return null;
   return <Navbar />;
+  
 }

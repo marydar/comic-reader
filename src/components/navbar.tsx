@@ -1,15 +1,6 @@
 "use client"
 import {Button} from "@/components/ui/button"
 import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "@/components/ui/command"
-import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -29,6 +20,7 @@ import { cn } from "@/lib/utils"
 import  Link  from "next/link"
 import { UserButton } from "../features/auth/components/user-button"
 import { Separator } from "./ui/separator"
+import SearchModal from "./search"
 
 
 export function Navbar() {
@@ -48,7 +40,8 @@ export function Navbar() {
     
     
     return (
-        <div className="bg-primary text-primary-foreground text-center h-[70px] w-full flex justify-around items-center">
+        <div className="bg-primary text-primary-foreground text-center h-[70px] w-full flex justify-around items-center ">
+            <SearchModal open={open} onOpenChange={setOpen}/>
             <div className="flex  px-8 w-full">
             <div className="flex justify-left items-center gap-2 w-full ">
                 <Link className="text-[24px] px-2 " href="/">MarComics</Link>
@@ -59,45 +52,9 @@ export function Navbar() {
                         <Search className="mr-2 text-primary" />
                         <span className="text-primary">Search</span>
                     </Button>
-                    <CommandDialog open={open} onOpenChange={setOpen} >
-                        <CommandInput placeholder="Search" />
-                        <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup>
-                                <CommandItem>Comic 1</CommandItem>
-                                <CommandItem>Comic 2</CommandItem>
-                                <CommandItem>Comic 3</CommandItem>
-                            </CommandGroup>
-                            <CommandSeparator />
-                            <CommandGroup>
-                                <CommandItem>Comic 4</CommandItem>
-                                <CommandItem>Comic 5</CommandItem>
-                                <CommandItem>Comic 6</CommandItem>
-                            </CommandGroup>
-                        </CommandList>
-                        <CommandEmpty>No results found.</CommandEmpty>
-                        <CommandEmpty>No results found.</CommandEmpty>
-                        {/* <CommandEmpty>No results found.</CommandEmpty> */}
-                        <CommandEmpty>No results found.</CommandEmpty>
-
-                    </CommandDialog>
+                    
                 </div>
             </div>
-            {/* <div>
-                <NavigationMenu>
-                <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-[14px] px-2 text-primary-foreground">Publish</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                        <NavigationMenuLink asChild>
-                            <Link href="/">Publish new Comic </Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                            <Link href="/">Publish new Chapter </Link>
-                        </NavigationMenuLink>
-                    </NavigationMenuContent>
-                </NavigationMenuItem>
-                </NavigationMenu>
-            </div> */}
             <div className="hidden md:flex justify-center items-center px-4 gap-4 ">
                 {data &&
                         <DropdownMenu modal={false}>

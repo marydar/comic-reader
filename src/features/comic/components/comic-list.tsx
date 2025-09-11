@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { use } from 'react'
 import { Id } from '../../../../convex/_generated/dataModel'
 import { ChevronDown } from 'lucide-react';
 import { Separator } from '@radix-ui/react-dropdown-menu';
@@ -11,6 +11,8 @@ import ComicCard from './comic-card';
 import GenreButton from '@/components/genre-button';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/pagination';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Comic = {
   _id: Id<"comics">;
@@ -20,33 +22,42 @@ type Comic = {
 };
 interface ComicGridRowProps {
   comics: Comic[];
+  totalPages: number;
   selectedGenres: string[];
-  setSelectedGenres: React.Dispatch<React.SetStateAction<string[]>>;
-  selectedSort: string | "views";
-  setSelectedSort: React.Dispatch<React.SetStateAction<string>>;
-  handleFilter: () => void;
+  selectedSort: string;
+  currentPage: number
+  handleFilter: (genres: string[], sort: string) => void;
+  handlePageChange: (page: number) => void;
 //   setSelectedSort: React.Dispatch<React.SetStateAction<string>>;
 }
 type sortOptions = "views" | "Latest" | "subscriptions" | "names";
-export default function ComicList({ comics, selectedGenres, setSelectedGenres,selectedSort, setSelectedSort, handleFilter }: ComicGridRowProps) {
+export default function ComicList({ comics, totalPages, currentPage, selectedGenres,selectedSort, handleFilter, handlePageChange }: ComicGridRowProps) {
     const [showFilter, setShowFilter] = useState(false);
-    // const [selectedSort, setSelectedSort] = useState<string>("views");
-    // const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+    const [currentSelectedGenres, setCurrentSelectedGenres] = useState<string[]>([]);
+    const [currentSelectedSort, setCurrentSelectedSort] = useState<string>("views");
+    useEffect(() => {
+      setCurrentSelectedGenres(selectedGenres);
+      setCurrentSelectedSort(selectedSort);
+    }, [selectedGenres]);
     const sortOption = {
         views: "views",
-        Latest: "Latest",
+        Latest: "date",
         subscriptions: "subscriptions",
         names: "names",
     };
     const toggleShowFilter = () => {
       setShowFilter(!showFilter);
     };
-    const handleSortClick = (selectedSort: string) => {
-       setSelectedSort(selectedSort);
+    const handleSortClick = (sort: string) => {
+        setCurrentSelectedSort(sort);
     };
-    // const handleFilter = () => {
-    //     console.log("filter clicked");
-    // };
+    const handleFilterClick = () => {
+        handleFilter(currentSelectedGenres, currentSelectedSort);
+    }
+    const handlePagination = (page: number) => {
+        console.log("page changed to " + page);
+        handlePageChange(page);
+    };
     //w-[350px] md:w-[800px] lg:w-[1200px]
   return (
     <div className='flex justify-center w-full'>
@@ -63,16 +74,16 @@ export default function ComicList({ comics, selectedGenres, setSelectedGenres,se
                 {/* <div className='flex items-center w-[300px] md:w-[600px] lg:w-[1100px] '> */}
                     <div className=' grid  grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 my-4'>
                         <div  onClick={()=>handleSortClick(sortOption.views)} className='cursor-pointer'>
-                        <GenreButton variant={selectedSort === sortOption.views ? "active" : "not-active"} genre={sortOption.views}/>
+                        <GenreButton variant={currentSelectedSort === sortOption.views ? "active" : "not-active"} genre={sortOption.views}/>
                         </div>
                         <div  onClick={()=>handleSortClick(sortOption.Latest)} className='cursor-pointer'>
-                        <GenreButton variant={selectedSort === sortOption.Latest ? "active" : "not-active"} genre={sortOption.Latest}/>   
+                        <GenreButton variant={currentSelectedSort === sortOption.Latest ? "active" : "not-active"} genre={sortOption.Latest}/>   
                         </div>
                         <div  onClick={()=>handleSortClick(sortOption.subscriptions)} className='cursor-pointer'>
-                        <GenreButton variant={selectedSort === sortOption.subscriptions ? "active" : "not-active"} genre={sortOption.subscriptions}/>
+                        <GenreButton variant={currentSelectedSort === sortOption.subscriptions ? "active" : "not-active"} genre={sortOption.subscriptions}/>
                         </div>
                         <div  onClick={()=>handleSortClick(sortOption.names)} className='cursor-pointer'>
-                        <GenreButton variant={selectedSort === sortOption.names ? "active" : "not-active"} genre={sortOption.names}/>
+                        <GenreButton variant={currentSelectedSort === sortOption.names ? "active" : "not-active"} genre={sortOption.names}/>
                         </div>
                     {/* </div> */}
                 </div>
@@ -81,12 +92,12 @@ export default function ComicList({ comics, selectedGenres, setSelectedGenres,se
                 <div className='flex w-full flex-col gap-4 py-4 lg:w-[800px]'>
                     <p className='text-[14px] md:text-[18px] text-foreground/90 text-left'>Filter Genre</p>
                     {/* <div className='flex items-center w-full   bg-amber-500'> */}
-                        <GenreSelector selectedGenres={selectedGenres} setSelectedGenres={setSelectedGenres}/>
+                        <GenreSelector selectedGenres={currentSelectedGenres} setSelectedGenres={setCurrentSelectedGenres}/>
                     {/* </div> */}
                     <Separator/>
                 </div>
                 {/* apply filter */}
-                <Button className=' bg-primary text-primary-foreground p-4  justify-center hover:bg-primary/90 cursor-pointer rounded-3xl md:w-[200px] w-full' disabled={false} onClick={handleFilter}>Apply Filter</Button>
+                <Button className=' bg-primary text-primary-foreground p-4  justify-center hover:bg-primary/90 cursor-pointer rounded-3xl md:w-[200px] w-full' disabled={false} onClick={handleFilterClick}>Apply Filter</Button>
             </div>
             {/* comis */}
             <div className='flex w-full flex-col gap-4 py-4 '>
@@ -105,7 +116,18 @@ export default function ComicList({ comics, selectedGenres, setSelectedGenres,se
                                 />
                                 
                             ))}
-                            {comics?.map((comic, index) => (
+                            {/* {comics?.map((comic, index) => (
+                                
+                                <ComicCard 
+                                key={comic._id}
+                                _id={comic._id}
+                                title={comic.title}
+                                views={230}
+                                thumbnail={comic.thumbnail}
+                                />
+                                
+                            ))} */}
+                            {/* {comics?.map((comic, index) => (
                                 
                                 <ComicCard 
                                 key={comic._id}
@@ -126,28 +148,17 @@ export default function ComicList({ comics, selectedGenres, setSelectedGenres,se
                                 thumbnail={comic.thumbnail}
                                 />
                                 
-                            ))}
-                            {comics?.map((comic, index) => (
-                                
-                                <ComicCard 
-                                key={comic._id}
-                                _id={comic._id}
-                                title={comic.title}
-                                views={230}
-                                thumbnail={comic.thumbnail}
-                                />
-                                
-                            ))}
+                            ))} */}
                             
                     </div>
                 </div>
             </div>
             <Pagination
-                totalPages={50}
-                onPageChange={(page) => console.log("Now on page:", page)}  
+                totalPages={totalPages}
+                initialPage={currentPage}
+                onPageChange={handlePagination}
             />
 
-            
         </div>
       </div>
     </div>

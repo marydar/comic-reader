@@ -5,6 +5,8 @@ import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import NavbarWrapper from "@/components/navbar-wrapper";
 import { Toaster } from "@/components/ui/sonner"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Providers from "./Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,11 +34,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
-          <ConvexClientProvider>
-            <NavbarWrapper/>
-            {children}
-            <Toaster />
-          </ConvexClientProvider>
+          <Providers>{children}</Providers>
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>
