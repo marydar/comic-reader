@@ -62,8 +62,7 @@ export default function PlaylistList({ playlists, totalPages, currentPage,select
         handlePageChange(page);
     };
     const handleSearchClick = () => {
-        handleSearch(currentSearchValue);
-        setCurrentSearchValue("");
+        handleSearch(currentSearchValue);   
     }
     //w-[350px] md:w-[800px] lg:w-[1200px]
   return (
