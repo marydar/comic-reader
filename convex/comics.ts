@@ -114,6 +114,7 @@ export const getComics = query({
   args: {
     page: v.number(),
     pageSize: v.number(),
+    searchedName: v.optional(v.string()),
     sortBy: v.optional(v.string()),
     genres: v.optional(v.array(genreEnum)),
     playlistId: v.optional(v.id("playlists")),
@@ -163,6 +164,17 @@ export const getComics = query({
       }
       const comicIds: Id<"comics">[] = comicGenres.map((item) => item.comicId as Id<"comics">);
       comicDocs = comicDocs.filter((c) => comicIds.includes(c._id));
+    }
+
+    console.log("comicDocs", comicDocs);
+    console.log("args.searchedName", args.searchedName);
+    if(args.searchedName && args.searchedName !== ""){
+      console.log("searching for : ", args.searchedName);
+      for(const comic of comicDocs){
+        console.log("comic : ", comic.title);
+      }
+      comicDocs = comicDocs.filter((c) => c.title.toLowerCase().includes(args.searchedName?.toLowerCase()? args.searchedName.toLowerCase() : ""));
+      
     }
 
     // 5. Sort

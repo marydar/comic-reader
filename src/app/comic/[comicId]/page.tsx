@@ -19,12 +19,17 @@ import { useCurrentUser } from '@/features/auth/api/use-current-user'
 import { useIsSubscribedByUser } from '@/features/subscription/api/use-is-subscribed-by-user'
 import { useCreateSubscription } from '@/features/subscription/api/use-create-subscription'
 import { useRemoveSubscription } from '@/features/subscription/api/use-remove-subscription'
+import { useGetPlaylistsByComicId } from '@/features/playlist/api/use-get-playlists-by-comic'
+import PlaylistGridRow from '@/features/playlist/components/playlist-grid-row'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { Play } from 'next/font/google'
 
 
 
 const ComicPage = () => {
+  const router = useRouter()
   const comicId = useComicId()
   const currentUser = useCurrentUser()
   const {data, isLoading} = useGetComicById({comicId})
@@ -33,6 +38,7 @@ const ComicPage = () => {
   const {data:isComicSubscribed, isLoading:isLoadingIsComicSubscribed} = useIsSubscribedByUser({userId:currentUser?.data?._id, comicId})
   const {mutate:createSubscription, isPending:isPendingCreateSubscription} = useCreateSubscription()
   const {mutate:removeSubscription, isPending:isPendingRemoveSubscription} = useRemoveSubscription()
+  const {data:playlistsWithComic, isLoading:isLoadingPlaylistsWithComic} = useGetPlaylistsByComicId({comicId})
   const [isSubscribed, setIsSubscribed] = useState(false);
   useEffect(() => {
     if (currentUser?.data) {
@@ -54,6 +60,15 @@ const ComicPage = () => {
       title: comic.title,
       thumbnail: comic.thumbnail, // safe fallback
     }));
+    const playlists = (playlistsWithComic ?? []).map((pl) => ({
+      _id: pl.playlist._id,
+      title: pl.playlist.name,
+      thumbnail: pl.lastComicThumbnail,
+      numberOfComics: pl.numberOfComics,
+    }));
+    const handleViewAllPlaylists = () => {
+      router.push(`/comic/${comicId}/comicLists`)
+    }
     const handleSubscribe = async () => {
       if(!currentUser.data) return
       if(isSubscribed){
@@ -151,6 +166,16 @@ const ComicPage = () => {
             <p className='md:px-12 px-4  text-foreground text-l md:text-2xl text-left'>You may also like</p>
             <div className='p-1 md:p-4 flex justify-center'>
                 <ComicGridRow comics={comics}/>
+            </div>
+        </div>
+        <div className=' py-1 md:py-8 flex flex-col  h-[300px] md:h-[600px]'>
+          <div className='flex justify-between items-center'>
+            <p className='md:px-12 px-4  text-foreground text-l md:text-2xl text-left'>Lists with this comic</p>
+            <Button className='border-1 border-primary bg-transparent text-foreground cursor-pointer' onClick={handleViewAllPlaylists}>View All</Button>
+          </div>
+            <div className='p-1 md:p-4 flex justify-center'>
+                {/* {playlists.length === 0 && <p>no lists available</p>} */}
+                {playlists && <PlaylistGridRow playlists={playlists}/>}
             </div>
         </div>
 

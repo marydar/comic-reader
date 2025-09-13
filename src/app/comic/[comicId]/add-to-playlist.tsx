@@ -11,6 +11,7 @@ import { useCurrentUser } from "@/features/auth/api/use-current-user"
 import { useComicId}from "@/hooks/use-comic-id"
 import { useCreatePlaylistItem } from "@/features/playlist/api/use-create-playlist-item"
 import { useRemovePlaylistItem } from "@/features/playlist/api/use-remove-playlist-item"
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
 
 type Playlist = {
     _id:Id<"playlists">
@@ -146,11 +147,39 @@ if(!playlistsWithComic) return <div>no playlists</div>
     }
   }
 
+  // <CommandDialog open={open} onOpenChange={onOpenChange} >
+  //                       <CommandInput placeholder="Search" />
+  //                       <CommandList>
+  //                           <CommandEmpty>No results found.</CommandEmpty>
+  //                           <CommandGroup>
+  //                               {data?.map((comic) => (
+  //                                   <div onClick={()=>handleComicClick(comic._id)} key={comic._id}>
+
+  //                                       <CommandItem key={comic._id}>{comic.title}</CommandItem>
+  //                                   </div>
+  //                               ))}
+  //                           </CommandGroup>
+  //                           <CommandSeparator />
+  //                           <CommandGroup>
+  //                               <CommandItem>Comic 4</CommandItem>
+  //                               <CommandItem>Comic 5</CommandItem>
+  //                               <CommandItem>Comic 6</CommandItem>
+  //                           </CommandGroup>
+  //                       </CommandList>
+  //                       <CommandEmpty>No results found.</CommandEmpty>
+  //                       <CommandEmpty>No results found.</CommandEmpty>
+  //                       {/* <CommandEmpty>No results found.</CommandEmpty> */}
+  //                       <CommandEmpty>No results found.</CommandEmpty>
+
+  //                   </CommandDialog>
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+       <CommandDialog open={open} onOpenChange={onOpenChange} >
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Add to Playlist</DialogTitle>
+          <CommandInput placeholder="Search playlists" />
         </DialogHeader>
 
         <div className="space-y-3 max-h-[200px] overflow-y-auto scrollbar">
@@ -159,18 +188,30 @@ if(!playlistsWithComic) return <div>no playlists</div>
             You have no playlists yet. Create one to get started.
           </div>
         )}
-          {playlists?.map(pl => (
-            <div key={pl._id} className="flex items-center space-x-2">
-              <Checkbox
-                checked={
-                    (pl.hasThisComic && !removed.includes(pl._id)) || 
-                    selected.includes(pl._id)
-                }
-                onCheckedChange={() => toggleSelect(pl)}
-              />
-              <span>{pl.name}</span>
-            </div>
-          ))}
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup >
+            {playlists?.map(pl => (
+              <div key={pl._id} className="flex items-center space-x-2 w-full">
+                
+                <CommandItem className="hover:bg-foreground/10 cursor-pointer" onClick={()=>toggleSelect(pl)}>
+                <div className="flex w-[100vh] items-center justify-start gap-2">
+                  <Checkbox
+                  checked={
+                      (pl.hasThisComic && !removed.includes(pl._id)) || 
+                      selected.includes(pl._id)
+                  }
+                  onCheckedChange={() => toggleSelect(pl)}
+                />
+                  {pl.name}
+                </div>
+                  
+                </CommandItem>
+                {/* <span>{pl.name}</span> */}
+              </div>
+            ))}
+            </CommandGroup>
+        </CommandList>
 
         </div>
         <div className="flex gap-2 mt-4">
@@ -193,6 +234,7 @@ if(!playlistsWithComic) return <div>no playlists</div>
           <Button onClick={handleAdd} className="w-full cursor-pointer">Apply changes</Button>
         </DialogFooter>
       </DialogContent>
+      </CommandDialog>
     </Dialog>
   )
 }
