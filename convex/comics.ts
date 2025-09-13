@@ -101,11 +101,13 @@ export const getComicById = query({
       .query("comicGenres")
       .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
       .collect();
+    const creator = await ctx.db.get(comic.creatorId); 
     return {
       ...comic,
       thumbnail: await ctx.storage.getUrl(comic.thumbnail),
       header: await ctx.storage.getUrl(comic.header),
       genres: comicGenres.map((genre) => genre.genre),
+      creator,
     };
   },
 });
@@ -119,6 +121,7 @@ export const getComics = query({
     genres: v.optional(v.array(genreEnum)),
     playlistId: v.optional(v.id("playlists")),
     subscriberId: v.optional(v.id("users")),
+    creatorId: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
     let comicDocs: Doc<"comics">[] = [];
@@ -149,6 +152,9 @@ export const getComics = query({
         .collect();
       const comicIds = subscriptions.map(s => s.comicId);
       comicDocs = comicDocs.filter((c) => comicIds.includes(c._id));
+    }
+    if(args.creatorId){
+      comicDocs = comicDocs.filter((c) => c.creatorId === args.creatorId);
     }
 
 

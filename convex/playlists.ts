@@ -116,6 +116,7 @@ export const getPlaylistsPagination = query({
   },
   handler: async (ctx, args) => {
     let playlistList: PlaylistInformation[] = [];
+    let playlists: Doc<"playlists">[] = [];
 
     if (args.comicId) {
      const playlistItems = await ctx.db
@@ -124,10 +125,17 @@ export const getPlaylistsPagination = query({
       .collect();
       const playlistIds = playlistItems.map(pi => pi.playlistId);
       const  playlistsRaw = await Promise.all(playlistIds.map((plId) => ctx.db.get(plId)));
-      const playlists = playlistsRaw.filter((pl): pl is Doc<"playlists"> => pl !== null);
+      playlists = playlistsRaw.filter((pl): pl is Doc<"playlists"> => pl !== null);
       if (playlists.length === 0) return null;
 
-      const result :PlaylistInformation[] = await Promise.all(
+    }
+    else{
+      playlists = await ctx.db.query("playlists").collect();
+    }
+    if(args.creatorId){
+      playlists = playlists.filter((pl) => pl.creatorId === args.creatorId);
+    }
+    const result :PlaylistInformation[] = await Promise.all(
         playlists.map(async (playlist) => {
           const playlistItems = await ctx.db
             .query("playlistItems")
@@ -153,8 +161,7 @@ export const getPlaylistsPagination = query({
           };
         })
       )
-      playlistList = result;
-    }
+    playlistList = result;
     console.log("playlistList", playlistList);
     console.log("args.searchedName", args.searchedName);
     if(args.searchedName && args.searchedName !== ""){

@@ -7,7 +7,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { Search } from "lucide-react"
+import { Moon, Search, Sun } from "lucide-react"
 import { use, useState } from "react"
 import { MenuIcon } from "lucide-react"
 import { ChevronDownCircle } from "lucide-react"
@@ -25,6 +25,8 @@ import SearchModal from "./search"
 
 export function Navbar() {
     const pathname = usePathname();
+    const body = document.body;
+    const [theme, setTheme] = useState("dark");
 
     // map routes to isActive values
     const getActive = (path: string) => {
@@ -37,6 +39,15 @@ export function Navbar() {
     const isActive = getActive(pathname);
     const [open, setOpen] = useState(false)
     const {data, isLoading} = useCurrentUser();
+    const toggleTheme = () => {
+        if (theme === "dark") {
+            setTheme("light");
+            body.classList.remove("dark");
+        } else {
+            setTheme("dark");
+            body.classList.add("dark");
+        }
+    };
     
     
     return (
@@ -75,7 +86,8 @@ export function Navbar() {
                     </DropdownMenuContent>
                 </DropdownMenu>
                 }
-                
+                <Sun className={cn("text-primary-foreground text-[24px] cursor-pointer flex", theme === "light" && "hidden")} onClick={toggleTheme}/>
+                <Moon className={cn("text-primary-foreground text-[24px] cursor-pointer flex", theme === "dark" && "hidden")} onClick={toggleTheme}/>
                 <UserButton variant="background"/>
                 {/* <Link className="text-[14px] px-5  py-3 text-primary bg-background hover:bg-background/90 cursor-pointer rounded-xl " href="/">Login</Link> */}
             </div>

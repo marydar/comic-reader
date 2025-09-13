@@ -15,6 +15,7 @@ interface useGetComicsProps{
     genres?: Genre[];
     playlistId?: Id<"playlists">;
     subscriberId?: Id<"users">;
+    creatorId?: Id<"users">;
 }
 
 export function useGetComics(args: useGetComicsProps) {

@@ -3,7 +3,7 @@
 import React from 'react'
 import { useComicId } from '@/hooks/use-comic-id'
 import { useGetComicById } from '@/features/comic/api/use-get-comic-by-id'
-import { Bookmark, Loader } from 'lucide-react'
+import { Bookmark, Loader, User } from 'lucide-react'
 import GenreButton from '@/components/genre-button'
 import { FaSubscript } from 'react-icons/fa'
 import { Eye } from 'lucide-react'
@@ -69,6 +69,10 @@ const ComicPage = () => {
     const handleViewAllPlaylists = () => {
       router.push(`/comic/${comicId}/comicLists`)
     }
+    const handlePublisher = (userId: string|undefined) => {
+      if(!userId) return
+      router.push(`/user/${userId}`)
+    }
     const handleSubscribe = async () => {
       if(!currentUser.data) return
       if(isSubscribed){
@@ -106,7 +110,16 @@ const ComicPage = () => {
           <img src={data?.thumbnail ? data?.thumbnail : undefined} alt={"comic1"} className='object-cover  h-full rounded-3xl w-[400px] md:w-[300px] lg:w-[350px] p-4'/>
           <div className='flex flex-col px-4 gap-2  '>
                 <p className='text-[18px] md:text-[28px] text-foreground '>{data.title}</p>
-                <p className='text-[12px] md:text-[14px] text-foreground/70 '>Author: {data.author}</p>
+                <p className='text-[12px] md:text-[14px] text-foreground/80 '>Author: {data.author}</p>
+                <div className='flex gap-2 items-center justify-start'>
+                <p className='text-[12px] md:text-[14px] text-primary/70 '>Published by:</p>
+                <div className='flex gap-2 items-center justify-start bg-primary rounded-lg px-2 py-1 cursor-pointer hover:bg-primary/80' onClick={()=>handlePublisher(data.creator?._id)}>
+                <div className='flex items-center gap-2'>
+                    <User className='text-foreground text-[10px] md:text-[10px]'/>
+                    <p className='text-[10px] md:text-[12px] text-foreground'>{data.creator?.name}</p>
+                </div>
+                </div>
+                </div>
                 <div className=' grid  grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-4 my-4 '>
                     {data.genres.map((genre : string) => (
                     <GenreButton key={genre} genre={genre} variant='show'/>
