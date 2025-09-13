@@ -21,12 +21,20 @@ import  Link  from "next/link"
 import { UserButton } from "../features/auth/components/user-button"
 import { Separator } from "./ui/separator"
 import SearchModal from "./search"
+import { useEffect } from "react"
 
 
 export function Navbar() {
     const pathname = usePathname();
     const body = document.body;
     const [theme, setTheme] = useState("dark");
+    useEffect(() => {
+        if (theme === "dark") {
+            body.classList.add("dark");
+        } else {
+            body.classList.remove("dark");
+        }
+    }, [theme]);
 
     // map routes to isActive values
     const getActive = (path: string) => {
@@ -42,10 +50,10 @@ export function Navbar() {
     const toggleTheme = () => {
         if (theme === "dark") {
             setTheme("light");
-            body.classList.remove("dark");
+            // body.classList.remove("dark");
         } else {
             setTheme("dark");
-            body.classList.add("dark");
+            // body.classList.add("dark");
         }
     };
     
