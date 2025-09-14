@@ -2,6 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { authTables } from "@convex-dev/auth/server";
 import {v} from "convex/values";
 import { genreEnum } from "./genres";
+import { title } from "process";
 
 
 
@@ -48,6 +49,24 @@ const schema = defineSchema({
   .index("by_user", ["userId"])
   .index("by_comic", ["comicId"])
   .index("by_user_and_comic", ["userId", "comicId"]),
+  chapters: defineTable({
+    title: v.string(),
+    thumbnail: v.id("_storage"), 
+    comicId: v.id("comics"),
+    order: v.number(),
+    likes: v.number(),
+    views: v.number(),
+    // Your other columns...
+  })
+  .index("by_comic", ["comicId"]),
+  chapterImages: defineTable({
+    image: v.id("_storage"),
+    order: v.number(),
+    chapterId: v.id("chapters"),
+    isbookmarked: v.boolean(),
+    // Your other columns...
+  })
+  .index("by_chapter", ["chapterId"]),
   // Your other tables...
 });
  

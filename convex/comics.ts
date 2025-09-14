@@ -245,3 +245,33 @@ export const getPopularComicsByGenre = query({
     return comicsWithUrls;
   },
 });
+
+export const getNumberOfViews = query({
+  args: {
+    comicId: v.id("comics"),
+  },
+  handler: async (ctx, args) => {
+    const chapters = await ctx.db
+      .query("chapters")
+      .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+      .collect();
+    let views = 0
+    for (const chapter of chapters) {
+      views += chapter.views;
+    }
+    return views;
+  },
+});
+
+export const getNumberOfChapters = query({
+  args: {
+    comicId: v.id("comics"),
+  },
+  handler: async (ctx, args) => {
+    const chapters = await ctx.db
+      .query("chapters")
+      .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+      .collect();
+    return chapters.length;
+  },
+});

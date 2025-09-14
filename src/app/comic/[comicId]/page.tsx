@@ -3,7 +3,7 @@
 import React from 'react'
 import { useComicId } from '@/hooks/use-comic-id'
 import { useGetComicById } from '@/features/comic/api/use-get-comic-by-id'
-import { Bookmark, Loader, User } from 'lucide-react'
+import { Bookmark, Loader, PlusCircle, User } from 'lucide-react'
 import GenreButton from '@/components/genre-button'
 import { FaSubscript } from 'react-icons/fa'
 import { Eye } from 'lucide-react'
@@ -21,11 +21,13 @@ import { useCreateSubscription } from '@/features/subscription/api/use-create-su
 import { useRemoveSubscription } from '@/features/subscription/api/use-remove-subscription'
 import { useGetPlaylistsByComicId } from '@/features/playlist/api/use-get-playlists-by-comic'
 import PlaylistGridRow from '@/features/playlist/components/playlist-grid-row'
+import { useGetNumberOfChapters } from '@/features/comic/api/use-get-comic-numberOf-chapters'
+import { useGetViews } from '@/features/comic/api/use-get-comic-views'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Play } from 'next/font/google'
-
+import ChapterCard from '@/features/chapter/components/chapterCard'
 
 
 const ComicPage = () => {
@@ -39,6 +41,8 @@ const ComicPage = () => {
   const {mutate:createSubscription, isPending:isPendingCreateSubscription} = useCreateSubscription()
   const {mutate:removeSubscription, isPending:isPendingRemoveSubscription} = useRemoveSubscription()
   const {data:playlistsWithComic, isLoading:isLoadingPlaylistsWithComic} = useGetPlaylistsByComicId({comicId})
+  const {data:numberOfViews, isLoading:isLoadingNumberOfViews} = useGetViews({comicId})
+  const {data:numberOfChapters, isLoading:isLoadingNumberOfChapters} = useGetNumberOfChapters({comicId})
   const [isSubscribed, setIsSubscribed] = useState(false);
   useEffect(() => {
     if (currentUser?.data) {
@@ -72,6 +76,11 @@ const ComicPage = () => {
     const handlePublisher = (userId: string|undefined) => {
       if(!userId) return
       router.push(`/user/${userId}`)
+    }
+    const handleAddNewChapter = () => {
+      if(!currentUser.data) return
+      if(currentUser.data?._id !== data.creatorId) return
+      router.push(`/comic/${comicId}/publishChapter`)
     }
     const handleSubscribe = async () => {
       if(!currentUser.data) return
@@ -130,7 +139,7 @@ const ComicPage = () => {
                 <div className='flex justify-left items-start gap-2 md:gap-4 '>
                     <div className='flex items-center ' >
                         <Eye className='text-primary text-2xl'/>
-                        <span className='text-foreground text-[10px] md:text-[12px] px-1 '>230M</span>
+                        <span className='text-foreground text-[10px] md:text-[12px] px-1 '>{numberOfViews}</span>
                     </div>
                     <div className='flex items-center '>
                         <RiUserFollowLine className='text-primary text-2xl'/>
@@ -165,14 +174,29 @@ const ComicPage = () => {
             <div className=' bg-primary/40 rounded-t-2xl text-center text-[12px] md:text-[18px] text-foreground p-4 md:p-4 flex justify-between items-center '>
             <div className='px-4'>
                 <p>Chapters</p>
-                <p className='text-[10px] md:text-[12px] text-foreground/70 text-left'>23</p>
+                <p className='text-[10px] md:text-[12px] text-foreground/70 text-left'>{numberOfChapters}</p>
             </div>  
+
             <div className='px-4'>
                 <HiArrowsUpDown className='text-foreground text-2xl'/>  
             </div>
             </div>
-            <div>
-                <p className='text-[12px] md:text-[14px] text-foreground/70 p-4 text-center'>no chapters available</p>
+            {data.creatorId === currentUser?.data?._id && (
+              <div onClick={handleAddNewChapter} className='flex justify-start items-center w-full gap-4 p-4 cursor-pointer hover:bg-primary/10'>
+                <PlusCircle className='text-primary text-2xl'/>
+                Add new chapter
+              </div>
+            )}
+            <div className='flex flex-col gap-4 mt-4 justify-center items-center px-4  scollbar'>
+              {numberOfChapters === 0 && <p className='text-[12px] md:text-[14px] text-foreground/70 p-4 text-center'>no chapters available</p>}
+              
+               <ChapterCard/>
+               <ChapterCard/>
+               <ChapterCard/>
+               <ChapterCard/>
+               <ChapterCard/>
+               <ChapterCard/>
+               <ChapterCard/>
             </div>
         </div>
         <div className=' py-1 md:py-8 flex flex-col  h-[300px] md:h-[600px]'>
