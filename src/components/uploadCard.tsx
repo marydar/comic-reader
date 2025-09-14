@@ -6,30 +6,59 @@ import { useRef } from 'react'
 interface Props {
     title: string
     description: string
+    targetRatio: number
+    errormsg?: string
     onFileSelect?: (file: File) => void
+    tolerance?: number 
     
 }
+// const TARGET_RATIO = 230 / 300; // ≈ 0.77
+// const TOLERANCE = 0.1; 
 
-export default function uploadCard({title, description, onFileSelect}: Props) {
+export default function uploadCard({title, description, onFileSelect, errormsg, targetRatio, tolerance}: Props) {
     const [preview, setPreview] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreview(url);
-      onFileSelect?.(file);
-    }
+    const f_tolerance = tolerance??0.1
+
+    const validateImageAspectRatio = (file: File) => {
+  return new Promise<boolean>((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const ratio = img.width / img.height;
+      const min = targetRatio * (1 - f_tolerance);
+      const max = targetRatio * (1 + f_tolerance);
+      const isValid = ratio >= min && ratio <= max;
+      resolve(isValid);
+    };
+    img.onerror = () => resolve(false);
+    img.src = URL.createObjectURL(file);
+  });
+};
+  const handleFile = async (file: File) => {
+    setError(null);
+
+  const isValid = await validateImageAspectRatio(file);
+  if (!isValid) {
+    setError(errormsg??description);
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  setPreview(url);
+  onFileSelect?.(file);
   };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) handleFile(file);
+    };
+  
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreview(url);
-      onFileSelect?.(file);
-    }
+    if (file) handleFile(file);
   };
 
   const handleClick = () => {
@@ -67,6 +96,7 @@ export default function uploadCard({title, description, onFileSelect}: Props) {
         </div>
         <p className=' text-center text-foreground lg:text-[14px]'>{title}</p>
         <p className=' text-center text-foreground/60 lg:text-[12px]'>{description}</p>
+        {error && <p className='text-center text-red-500 lg:text-[12px]'>{error}</p>}
     </div>
   )
 }

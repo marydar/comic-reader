@@ -129,12 +129,12 @@ const PublishComicPage = () => {
     <div className='flex justify-center w-full'>
       <div className='flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl border-primary border-1 my-4 md:my-10'>
         <div className='bg-primary/40 rounded-t-2xl text-center text-[12px] md:text-[18px] text-foreground p-4 md:p-4 flex justify-center'>
-          Publish your new comic
+          Publish a new comic
         </div>
         <div className='flex w-full flex-col md:flex-row'>
           <div className='flex flex-col p-12 gap-12'>
-            <UploadCard title='Comic Cover' description='mage size must be 720x1024. Image must be less than 500KB. Only JPG, JPEG, and PNG formats are allowed.' onFileSelect={(file) =>{setSelectedCover(file)}}/>
-            <UploadCard title='Cover Header' description='mage size must be 1500x500. Image must be less than 500KB. Only JPG, JPEG, and PNG formats are allowed.' onFileSelect={(file) =>{setSelectedHeader(file)}}/>
+            <UploadCard title='Comic Cover' description='mage size must be 720x1024. Image must be less than 500KB. Only JPG, JPEG, and PNG formats are allowed.' onFileSelect={(file) =>{setSelectedCover(file)}} targetRatio={0.77} errormsg='cover size must be near 3:4 ratio (720x1024)' tolerance={0.1}/>
+            <UploadCard title='Cover Header' description='mage size must be 1500x500. Image must be less than 500KB. Only JPG, JPEG, and PNG formats are allowed.' onFileSelect={(file) =>{setSelectedHeader(file)}} targetRatio={2.8} errormsg='header size must be near 3:1 ratio (1500x500)' tolerance={0.2}/>
           </div>
           <form onSubmit={handlePublishComic} className='space-y-2.5 p-6  md:p-12 gap-12 relative '>
                 <p>Title</p>

@@ -8,6 +8,7 @@ import { useAuthActions } from '@convex-dev/auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 export const UserButton = ({variant}: {variant?: "primary" | "background"}) => {
     const {signOut} = useAuthActions();
@@ -36,6 +37,16 @@ export const UserButton = ({variant}: {variant?: "primary" | "background"}) => {
     const handleLogin = ()=>{
         router.push("/auth")
     }
+    const handleProfile = ()=>{
+        console.log("profile")
+        console.log(data?._id)
+        if(data){
+            router.push(`/user/${data._id}`)
+        }
+        else{
+            toast.error("no user found")
+        }
+    }
     return (
         
         <DropdownMenu modal={false}>
@@ -48,7 +59,7 @@ export const UserButton = ({variant}: {variant?: "primary" | "background"}) => {
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" side="bottom" className='w-60 bg-background text-primary'>
-                <DropdownMenuItem onClick={()=>{}} className='h-10 bg-background text-primary'>
+                <DropdownMenuItem onClick={()=>{handleProfile()}} className='h-10 bg-background text-primary cursor-pointer'>
                     <UserCircle className='size-4 mr-2 text-center'/>{userName}
                 </DropdownMenuItem>
                 

@@ -89,7 +89,7 @@ export function Navbar() {
                             <Separator/>
                         </DropdownMenuItem>
                         <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
-                            <Link className="text-[12px] p-2" href="/">Publish new chapter</Link>
+                            <Link className="text-[12px] p-2" href="/publishChapter">Publish new chapter</Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
