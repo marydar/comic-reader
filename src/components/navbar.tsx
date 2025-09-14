@@ -22,19 +22,28 @@ import { UserButton } from "../features/auth/components/user-button"
 import { Separator } from "./ui/separator"
 import SearchModal from "./search"
 import { useEffect } from "react"
+import {useTheme} from "next-themes";
 
 
 export function Navbar() {
     const pathname = usePathname();
-    const body = document.body;
-    const [theme, setTheme] = useState("dark");
+    const { theme, setTheme, resolvedTheme } = useTheme();
+    const [mounted , setMounted] = useState(false);
+    const [open, setOpen] = useState(false)
+    const {data, isLoading} = useCurrentUser();
     useEffect(() => {
-        if (theme === "dark") {
-            body.classList.add("dark");
-        } else {
-            body.classList.remove("dark");
-        }
-    }, [theme]);
+        setMounted(true);
+    }, []);
+    if(!mounted) return null
+    // const body = document.body;
+    // const [theme, setTheme] = useState("dark");
+    // useEffect(() => {
+    //     if (theme === "dark") {
+    //         body.classList.add("dark");
+    //     } else {
+    //         body.classList.remove("dark");
+    //     }
+    // }, [theme]);
 
     // map routes to isActive values
     const getActive = (path: string) => {
@@ -43,18 +52,9 @@ export function Navbar() {
         if (path.startsWith("/publishComic")) return "publishComic";
         return null;
     };
-
     const isActive = getActive(pathname);
-    const [open, setOpen] = useState(false)
-    const {data, isLoading} = useCurrentUser();
     const toggleTheme = () => {
-        if (theme === "dark") {
-            setTheme("light");
-            // body.classList.remove("dark");
-        } else {
-            setTheme("dark");
-            // body.classList.add("dark");
-        }
+        setTheme(theme === "dark" ? "light" : "dark")
     };
     
     
@@ -94,8 +94,8 @@ export function Navbar() {
                     </DropdownMenuContent>
                 </DropdownMenu>
                 }
-                <Sun className={cn("text-primary-foreground text-[24px] cursor-pointer flex", theme === "light" && "hidden")} onClick={toggleTheme}/>
-                <Moon className={cn("text-primary-foreground text-[24px] cursor-pointer flex", theme === "dark" && "hidden")} onClick={toggleTheme}/>
+                <Sun className={cn("text-primary-foreground text-[24px] cursor-pointer flex", resolvedTheme === "light" && "hidden")} onClick={toggleTheme}/>
+                <Moon className={cn("text-primary-foreground text-[24px] cursor-pointer flex", resolvedTheme === "dark" && "hidden")} onClick={toggleTheme}/>
                 <UserButton variant="background"/>
                 {/* <Link className="text-[14px] px-5  py-3 text-primary bg-background hover:bg-background/90 cursor-pointer rounded-xl " href="/">Login</Link> */}
             </div>

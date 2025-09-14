@@ -8,6 +8,7 @@ import { useUserId } from '@/hooks/use-user-id';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils'
 
+
 export default function UserPageNavbar() {
     const userId = useUserId();
     const pathname = usePathname();
