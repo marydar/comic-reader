@@ -16,11 +16,13 @@ export const createChapter = mutation({
     if(!comic) throw new Error("Comic not found");
     const comicCreatorId = comic.creatorId;
     if(comicCreatorId !== authUserId) throw new Error("Not authorized");
-    const numberOfChapters = await ctx.db
+    const lastChapter = await ctx.db
         .query("chapters")
         .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
-        .collect();
-    const order = numberOfChapters.length + 1;
+        .order("desc")
+        .first();
+    let order =  lastChapter ? lastChapter.order + 1 : 1;
+    // const order = numberOfChapters.length + 1;
     const chapterId = await ctx.db.insert("chapters", {
       title: args.title,
       thumbnail: args.thumbnail,

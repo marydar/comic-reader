@@ -31,7 +31,7 @@ import { usePaginatedQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 
-const BATCH_SIZE = 10;
+const BATCH_SIZE = 1;
 
 interface useGetChaptersImagesProps {
   chapterId?: Id<"chapters">;
@@ -54,5 +54,6 @@ export const useGetChaptersImages = ({ chapterId }: useGetChaptersImagesProps) =
     results: results ?? [],
     status: enabled ? status : "idle", // optional: custom status when skipped
     loadMore: () => loadMore(BATCH_SIZE),
+
   };
 };

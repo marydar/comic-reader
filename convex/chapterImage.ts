@@ -16,11 +16,12 @@ export const addChapterImage = mutation({
     if(!authUserId) throw new Error("Not authenticated");
     const chapter = await ctx.db.get(args.chapterId);
     if(!chapter) throw new Error("Chapter not found");
-    const numberOfImages = await ctx.db
+    const lastImage = await ctx.db
         .query("chapterImages")
         .withIndex("by_chapter", (q) => q.eq("chapterId", args.chapterId))
-        .collect();
-    let order = numberOfImages.length + 1;
+        .order("desc")
+        .first();
+    let order =  lastImage ? lastImage.order + 1 : 1;
     if(args.order){
         order = args.order;
     }
