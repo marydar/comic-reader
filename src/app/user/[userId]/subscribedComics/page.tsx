@@ -14,6 +14,7 @@ export type Genre = typeof genreEnum.type;
 const genreEnumValues = genreEnum.type;
 import { Id } from '../../../../../convex/_generated/dataModel'
 import { useCurrentUser } from '@/features/auth/api/use-current-user'
+import ComicListSkeleton from '@/features/comic/components/comic-list-skeleton'
 
 const PublishedComicsPage = () => {
   const searchParams = useSearchParams();
@@ -48,16 +49,15 @@ const PublishedComicsPage = () => {
         sortBy: selectedSort as "views" | "date" | "subscriptions" | "names" ?? "views",
         subscriberId: userId as Id<"users">,
     });
-    if(isLoading) return <Loader/>
-    if(!paginatedData?.comics) return <div>no data</div>
-    const invalidPage = currentPage < 1 || currentPage > paginatedData.totalPages;
-    if(paginatedData.comics.length === 0){
+    
+    const invalidPage = currentPage < 1 || paginatedData&&  currentPage > paginatedData.totalPages;
+    if(paginatedData?.comics.length === 0){
       
       
       // router.push(`/browse?`);
     }
 
-    if(invalidPage && paginatedData.comics.length !== 0){
+    if(invalidPage && paginatedData?.comics.length !== 0){
       return (
         <div className='flex justify-center items-center w-full h-[80vh]'>
           <div className='flex flex-col justify-center items-center'>
@@ -69,7 +69,7 @@ const PublishedComicsPage = () => {
       )
     }
 
-    const comics = (paginatedData.comics ?? []).map((comic) => ({
+    const comics = (paginatedData?.comics ?? []).map((comic) => ({
         _id: comic._id,
         title: comic.title,
         thumbnail: comic.thumbnail, // safe fallback
@@ -103,6 +103,8 @@ const PublishedComicsPage = () => {
 
   return (
     <div className='flex justify-center items-center w-full'>
+      {isLoading && <ComicListSkeleton/>}
+              {!isLoading && paginatedData  && (
         <ComicList
          comics={comics}
          totalPages={paginatedData.totalPages}
@@ -114,6 +116,7 @@ const PublishedComicsPage = () => {
          handleFilter={handleFilter}
          handlePageChange={handlePageChange}
          />
+              )}
     </div>
   )
 }

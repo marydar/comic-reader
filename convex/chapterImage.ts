@@ -1,6 +1,9 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
+
+import { query } from "./_generated/server";
 
 export const addChapterImage = mutation({
   args: {
@@ -87,4 +90,64 @@ export const updateOrder = mutation({
         });
         return args.chapterImageId;
     },
+});
+
+export const listPaginated = query({
+  args: {
+    chapterId: v.id("chapters"),
+    cursor: v.optional(v.any()),   // convex pagination cursor
+    pageSize: v.number(),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, { chapterId, cursor, pageSize }) => {
+    console.log("listPaginated", chapterId, cursor, pageSize)
+    const images =  await ctx.db
+      .query("chapterImages")
+      .filter((q) => q.eq(q.field("chapterId"), chapterId))
+      .order("asc")
+      .paginate({ cursor, numItems: pageSize });
+
+    console.log("images", images)
+
+    return {
+      ...images,
+      page:(
+        await Promise.all(
+          images.page.map(async (chapter) => ({
+            ...chapter,
+            imageUrl:await ctx.storage.getUrl(chapter.image),
+          }))
+        )
+      )
+    }
+  },
+});
+
+export const getChapterImages = query({
+  args: {
+    chapterId: v.id("chapters"),
+    paginationOpts: paginationOptsValidator
+  },
+  handler: async (ctx, args) => {
+    const chapter = await ctx.db.get(args.chapterId);
+    if(!chapter) throw new Error("chapter not found");
+    const images = await ctx.db
+        .query("chapterImages")
+        .withIndex("by_chapter", (q) => q.eq("chapterId", args.chapterId))
+        .order("asc")
+        .paginate(args.paginationOpts);
+    
+    return {
+      ...images,
+      page:(
+        await Promise.all(
+          images.page.map(async (chapter) => ({
+            ...chapter,
+            imgUrl: await ctx.storage.getUrl(chapter.image),
+          }))
+        )
+      )
+    };
+  },
+  
 });

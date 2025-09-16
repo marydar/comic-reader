@@ -12,6 +12,7 @@ import { genres } from '@/components/genres'
 export type Genre = typeof genreEnum.type;
 const genreEnumValues = genreEnum.type;
 import { useCurrentUser } from '@/features/auth/api/use-current-user'
+import ComicListSkeleton from '@/features/comic/components/comic-list-skeleton'
 
 const BrowsePage = () => {
   const searchParams = useSearchParams();
@@ -42,16 +43,12 @@ const BrowsePage = () => {
         genres: selectedGenres as Genre[] ?? [],
         sortBy: selectedSort as "views" | "date" | "subscriptions" | "names" ?? "views",
     });
-    if(isLoading) return <Loader/>
-    if(!paginatedData?.comics) return <div>no data</div>
-    const invalidPage = currentPage < 1 || currentPage > paginatedData.totalPages;
-    if(paginatedData.comics.length === 0){
-      
-      
-      // router.push(`/browse?`);
-    }
+    // if(isLoading) return <Loader/>
+    // if(!paginatedData?.comics) return <div>no data</div>
+    const invalid = paginatedData && paginatedData.totalPages < currentPage
+    const invalidPage = currentPage < 1 || invalid;
 
-    if(invalidPage && paginatedData.comics.length !== 0){
+    if(invalidPage && paginatedData?.comics.length !== 0){
       return (
         <div className='flex justify-center items-center w-full h-[80vh]'>
           <div className='flex flex-col justify-center items-center'>
@@ -63,7 +60,7 @@ const BrowsePage = () => {
       )
     }
 
-    const comics = (paginatedData.comics ?? []).map((comic) => ({
+    const comics = (paginatedData?.comics ?? []).map((comic) => ({
         _id: comic._id,
         title: comic.title,
         thumbnail: comic.thumbnail, // safe fallback
@@ -97,6 +94,16 @@ const BrowsePage = () => {
 
   return (
     <div className='flex justify-center items-center w-full'>
+      {isLoading && <ComicListSkeleton/>}
+      {!isLoading && comics.length === 0 && (
+        <div className='flex justify-center items-center w-full h-[80vh]'>
+          <div className='flex flex-col justify-center items-center'>
+          <TriangleAlert className='text-foreground text-4xl'/>
+          no comics found
+        </div>
+        </div>
+      )}
+      {!isLoading && paginatedData && comics.length !== 0 && (
         <ComicList
          comics={comics}
          totalPages={paginatedData.totalPages}
@@ -108,6 +115,7 @@ const BrowsePage = () => {
          handleFilter={handleFilter}
          handlePageChange={handlePageChange}
          />
+        )}
     </div>
   )
 }

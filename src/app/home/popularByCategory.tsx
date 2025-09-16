@@ -8,14 +8,13 @@ import { Loader } from 'lucide-react'
 import { useState } from 'react'
 import { genreEnum } from '../../../convex/genres'
 import { useGetPoplularComicsByGenre } from '@/features/comic/api/use-get-popular-comics-by-genre'
+import ComicGridRowSkeleton from '@/features/comic/components/comic-grid-row-skeleton'
 type Genre = typeof genreEnum.type;
 
 const popularByCategory = () => {
   // const {data, isLoading} = useGetAllComics()
   const [selectedGenre, setSelectedGenre] = useState<string>("Horror");
   const {data, isLoading} = useGetPoplularComicsByGenre({genre: selectedGenre as Genre});
-  // if(isLoading) return <Loader/>
-  // if(!data) return <div>no data</div>
 
   const comics = (data ?? []).map((comic) => ({
     _id: comic._id,
@@ -43,15 +42,12 @@ const popularByCategory = () => {
                     )
                 ))}
              </div>
-             {isLoading ? (
-              <div className='h-full w-full flex justify-center items-center'>
-                <Loader/>
-              </div>
-             )
-             : (<div className='p-1 md:p-4 flex justify-center'>  
-              <ComicGridRow comics={comics}/>
-            </div>)
-}
+             <div className='p-1 md:p-4 flex justify-center'>
+              {isLoading && <ComicGridRowSkeleton/>}
+                {!isLoading && data && (
+                    <ComicGridRow comics={comics}/>
+                )}  
+            </div>
         </div>
     </div>
 

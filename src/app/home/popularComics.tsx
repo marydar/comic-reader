@@ -10,25 +10,17 @@ import { useState } from 'react'
 import { api } from "../../../convex/_generated/api";
 import { Id } from '../../../convex/_generated/dataModel'
 import Link from 'next/link'
+import HeroSkeleton from './hero-skeleton'
 
 
 const PopularComics = () => {
     const {data, isLoading} = useGetAllComics()
     const [currentIndex, setCurrentIndex] = useState(0);
-    if(isLoading) return (
-      <div className='h-full w-full flex justify-center items-center'>
-        <Loader/>
-      </div>
-    )
-    if(!data) return <div>no data</div>
     const comics = (data ?? []).map((comic) => ({
     id: comic._id,
     title: comic.title,
     header: comic.header ,
   }));
-    if (comics.length === 0) {
-        return <div>No comics available</div>;
-    }
     const handleNext = () => {
     
     setCurrentIndex((prev) => (prev + 1) % comics.length); // loops back to start
@@ -44,6 +36,8 @@ const PopularComics = () => {
 
   return (
     <div className='lg:p-10 p-4 md:pt-6 flex w-full h-[200px] md:h-[400px]  lg:h-[700px] text-foreground text-center cursor-grab'>
+        {(isLoading || data?.length === 0) && <HeroSkeleton/>}
+        {!isLoading && data && (
         <div className='bg-blue-950 w-full relative rounded-3xl'>
             <Link href={`/comic/${currentComic?.id}`}>
             <img src={currentComic?.header ? currentComic?.header : undefined} alt={"comic1"} className='w-full object-cover  h-full rounded-3xl'/>
@@ -62,6 +56,7 @@ const PopularComics = () => {
                 </div>
             </div>
         </div>
+        )}
         {/* Popular Comics */}
     </div>
   )

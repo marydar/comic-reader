@@ -77,9 +77,8 @@ export default function ComicList({ comics, totalPages, currentPage, selectedGen
                 <ChevronDown className='text-foreground text-2xl'/>
                 <p className='text-[14px] md:text-[24px] text-foreground text-center'>Sort and filter</p>
             </div>
-           
             <Separator className='text-2xl text-foreground'/>
-            <div className={cn('flex w-full flex-col gap-4 py-4 px-2 md:pl-8 lg:w-[800px]', showFilter && 'hidden')}>
+            <div className={cn('flex w-full flex-col gap-4 py-4 px-2 md:pl-8 lg:w-[800px]', !showFilter && 'hidden')}>
                  <div className="flex gap-4 bg-background text-primary-foreground lg:w-sm md:w-[200px] h-[35px] justify-center items-center hover:bg-background/90 cursor-pointer rounded-3xl">
                     <Input 
                     placeholder="Search playlists" 

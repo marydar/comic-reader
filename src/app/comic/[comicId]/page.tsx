@@ -28,7 +28,21 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Play } from 'next/font/google'
 import ChapterCard from '@/features/chapter/components/chapterCard'
+import ComicGridRowSkeleton from '@/features/comic/components/comic-grid-row-skeleton'
+import ComicPageSkeleton from './comicPage-skeleton'
+import ChapterList from '@/features/chapter/components/chapter-list'
+import { Id } from '../../../../convex/_generated/dataModel'
+import { useGetChapters } from '@/features/chapter/api/use-get-chapters'
 
+type Chapter = {
+  _id: Id<"chapters">;
+  title: string;
+  thumbnail: string | null;
+  createdAt: number;
+  likes : number;
+  views: number;
+  order: number;
+}
 
 const ComicPage = () => {
   const router = useRouter()
@@ -43,7 +57,9 @@ const ComicPage = () => {
   const {data:playlistsWithComic, isLoading:isLoadingPlaylistsWithComic} = useGetPlaylistsByComicId({comicId})
   const {data:numberOfViews, isLoading:isLoadingNumberOfViews} = useGetViews({comicId})
   const {data:numberOfChapters, isLoading:isLoadingNumberOfChapters} = useGetNumberOfChapters({comicId})
+  const {results:comicChapters, status, loadMore} = useGetChapters({comicId})
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [sortOption, setSortOption] = useState<"asc" | "desc">("desc");
   useEffect(() => {
     if (currentUser?.data) {
       if(isComicSubscribed){
@@ -54,10 +70,6 @@ const ComicPage = () => {
       }
     }
   }, [currentUser, comicId]);
-  if(isLoading ) return <div><Loader/></div>
-  if(!data) return <div>No comic found</div>
-    if(isLoading) return <Loader/>
-    if(!data) return <div>no data</div>
   
     const comics = (allComics ?? []).map((comic) => ({
       _id: comic._id,
@@ -70,6 +82,15 @@ const ComicPage = () => {
       thumbnail: pl.lastComicThumbnail,
       numberOfComics: pl.numberOfComics,
     }));
+    const chapters = (comicChapters ?? []).map((chapter) => ({
+      _id: chapter._id,
+      title: chapter.title,
+      thumbnail: chapter.thumbnail, // safe fallback
+      createdAt: chapter._creationTime,
+      likes: chapter.likes,
+      views: chapter.views,
+      order: chapter.order,
+    }));
     const handleViewAllPlaylists = () => {
       router.push(`/comic/${comicId}/comicLists`)
     }
@@ -78,7 +99,7 @@ const ComicPage = () => {
       router.push(`/user/${userId}`)
     }
     const handleAddNewChapter = () => {
-      if(!currentUser.data) return
+      if(!currentUser.data || !data) return
       if(currentUser.data?._id !== data.creatorId) return
       router.push(`/comic/${comicId}/publishChapter`)
     }
@@ -113,6 +134,9 @@ const ComicPage = () => {
     }
   return (
     <div className='flex justify-center w-full'>
+      {(isLoading || status === "LoadingFirstPage") && <ComicPageSkeleton/>}
+      {!isLoading && data && (
+      <>
       <AddToPlaylistModal open={showAddToPlaylistModal} onOpenChange={setShowAddToPlaylistModal}/>
       <div className='flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl  my-4 md:my-10'>
         <div className='flex w-full flex-col md:flex-row gap-4'>
@@ -170,39 +194,16 @@ const ComicPage = () => {
                 </div>
               </div>
         </div>
-        <div className='flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl border-primary border-1 my-4 md:my-10 max-h-[500px] md:max-h-[800px] '>
-            <div className=' bg-primary/40 rounded-t-2xl text-center text-[12px] md:text-[18px] text-foreground p-4 md:p-4 flex justify-between items-center '>
-            <div className='px-4'>
-                <p>Chapters</p>
-                <p className='text-[10px] md:text-[12px] text-foreground/70 text-left'>{numberOfChapters}</p>
-            </div>  
-
-            <div className='px-4'>
-                <HiArrowsUpDown className='text-foreground text-2xl'/>  
-            </div>
-            </div>
-            {data.creatorId === currentUser?.data?._id && (
-              <div onClick={handleAddNewChapter} className='flex justify-start items-center w-full gap-4 p-4 cursor-pointer hover:bg-primary/10'>
-                <PlusCircle className='text-primary text-2xl'/>
-                Add new chapter
-              </div>
-            )}
-            <div className='flex flex-col gap-4 mt-4 justify-center items-center px-4  scollbar'>
-              {numberOfChapters === 0 && <p className='text-[12px] md:text-[14px] text-foreground/70 p-4 text-center'>no chapters available</p>}
-              
-               <ChapterCard/>
-               <ChapterCard/>
-               <ChapterCard/>
-               <ChapterCard/>
-               <ChapterCard/>
-               <ChapterCard/>
-               <ChapterCard/>
-            </div>
-        </div>
+        <ChapterList chapters={chapters}  numberOfChapters={numberOfChapters} handleAddNewChapter={handleAddNewChapter} userIsCreator={currentUser.data?._id === data.creatorId} sortOption={sortOption} setSortOption={setSortOption} loadMore={loadMore} isLoadingMore={status === "LoadingMore"} canLoadMore={status === "CanLoadMore"} comicId={comicId}/>
         <div className=' py-1 md:py-8 flex flex-col  h-[300px] md:h-[600px]'>
             <p className='md:px-12 px-4  text-foreground text-l md:text-2xl text-left'>You may also like</p>
             <div className='p-1 md:p-4 flex justify-center'>
-                <ComicGridRow comics={comics}/>
+              {isLoading && <ComicGridRowSkeleton/>}
+              
+                        {!isLoading && data && (
+                          <ComicGridRow comics={comics}/>
+                        )}
+                
             </div>
         </div>
         <div className=' py-1 md:py-8 flex flex-col  h-[300px] md:h-[600px]'>
@@ -217,6 +218,8 @@ const ComicPage = () => {
         </div>
 
       </div>
+      </>
+      )}
     </div>
   )
 }

@@ -1,6 +1,8 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { query } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
 export const createChapter = mutation({
   args: {
     comicId: v.id("comics"),
@@ -89,5 +91,81 @@ export const removeLike = mutation({
       likes: chapter.likes - 1,
     });
     return args.chapterId;
+  },
+});
+
+export const getChapters = query({
+  args: {
+    comicId: v.id("comics"),
+    sortOption: v.optional(v.string()),
+    paginationOpts: paginationOptsValidator
+  },
+  handler: async (ctx, args) => {
+    const comic = await ctx.db.get(args.comicId);
+    if(!comic) throw new Error("Comic not found");
+    let order : "asc" | "desc" = "desc";
+    if(args.sortOption == "desc"){
+      order = "desc";
+    }
+    else{
+      order = "asc";
+    }
+    const chapters = await ctx.db
+        .query("chapters")
+        .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+        .order(order)
+        .paginate(args.paginationOpts);
+    
+    return {
+      ...chapters,
+      page:(
+        await Promise.all(
+          chapters.page.map(async (chapter) => ({
+            ...chapter,
+            thumbnail:chapter.thumbnail? await ctx.storage.getUrl(chapter.thumbnail) : undefined,
+          }))
+        )
+      )
+    };
+  },
+  
+});
+
+export const getChapterByOrder = query({
+  args: {
+    comicId: v.id("comics"),
+    order: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const comic = await ctx.db.get(args.comicId);
+    if(!comic) throw new Error("comic not found");
+    const chapterDoc = await ctx.db
+      .query("chapters")
+      .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+      .filter((q) => q.eq(q.field("order"), args.order))
+      .first();
+    if(!chapterDoc) throw new Error("Chapter not found");
+    return {
+      ...chapterDoc,
+      thumbnail: await ctx.storage.getUrl(chapterDoc.thumbnail),
+    };
+  },
+});
+export const adjacent = query({
+  args: { comicId: v.id("comics"), order: v.number() },
+  handler: async (ctx, { comicId, order }) => {
+    const next = await ctx.db
+      .query("chapters")
+      .withIndex("by_comic", (q) => q.eq("comicId", comicId))
+      .filter((q) => q.gt(q.field("order"), order))
+      .order("asc")
+      .first();
+    const prev = await ctx.db
+      .query("chapters")
+      .withIndex("by_comic", (q) => q.eq("comicId", comicId))
+      .filter((q) => q.lt(q.field("order"), order))
+      .order("desc")
+      .first();
+    return { next, prev };
   },
 });

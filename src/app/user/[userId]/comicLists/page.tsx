@@ -17,6 +17,7 @@ const genreEnumValues = genreEnum.type;
 import { useCurrentUser } from '@/features/auth/api/use-current-user'
 import PlaylistList from '@/features/playlist/components/playlist-list'
 import { useGetPlaylistsPagination } from '@/features/playlist/api/use-get-playlists-pagination'
+import ComicListSkeleton from '@/features/comic/components/comic-list-skeleton'
 
 const ComicPlaylistsPage = () => {
   const searchParams = useSearchParams();
@@ -47,11 +48,9 @@ const ComicPlaylistsPage = () => {
         sortBy: selectedSort as "numberOfComics" | "date" | "saves" | "names" ?? "saves",
         creatorId: userId as Id<"users">,
     });
-    if(isLoading) return <Loader/>
-    if(!paginatedData?.playlistsInfo) return <div>no data</div>
-    const invalidPage = currentPage < 1 || currentPage > paginatedData.totalPages;
+    const invalidPage = currentPage < 1 || paginatedData && currentPage > paginatedData.totalPages;
 
-    if(invalidPage && paginatedData.playlistsInfo.length !== 0){
+    if(invalidPage && paginatedData?.playlistsInfo.length !== 0){
       return (
         <div className='flex justify-center items-center w-full h-[80vh]'>
           <div className='flex flex-col justify-center items-center'>
@@ -63,7 +62,7 @@ const ComicPlaylistsPage = () => {
       )
     }
 
-    const playlists = (paginatedData.playlistsInfo ?? []).map((pl) => ({
+    const playlists = (paginatedData?.playlistsInfo ?? []).map((pl) => ({
         _id: pl.playlist._id,
         title: pl.playlist.name,
         numberOfComics: pl.numberOfComics,
@@ -91,6 +90,8 @@ const ComicPlaylistsPage = () => {
 
   return (
     <div className='flex justify-center items-center w-full'>
+        {isLoading && <ComicListSkeleton/>}
+        {!isLoading && paginatedData  && (
         <PlaylistList
          playlists={playlists}
          totalPages={paginatedData.totalPages}
@@ -101,6 +102,7 @@ const ComicPlaylistsPage = () => {
          handleFilter={handleFilter}
          handlePageChange={handlePageChange}
          />
+        )}
     </div>
   )
 }
