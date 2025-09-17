@@ -16,10 +16,10 @@ interface ChapterCardProps {
 }
 export default function ChapterCard({_id, title, views, likes,order, createdAt, thumbnail, comicId}: ChapterCardProps) {
   return (
-    <div className='flex items-center justify-start min-w-[150px] max-w[150px] h-[240px] md:w-full md:max-h-[70px] md:min-h-[70px] bg-background border-1 border-primary rounded-2xl cursor-grab'>
+    <div className='flex items-center justify-start min-w-[150px] max-w[150px] min-h-[50px] max-h-[50px]  md:w-full md:max-h-[70px] md:min-h-[70px] bg-background border-1 border-primary rounded-2xl cursor-grab'>
       <Link href={`/comic/${comicId}/ch_${order}`}>
-      <div className='flex items-center justify-center w-full  gap-4 px-4'>
-        <img src={thumbnail ? thumbnail : undefined} alt={"comic1"} className='object-center   rounded-2xl max-w-[40px] max-h-[40px] min-w-[40px]' width={50} height={50}/>
+      <div className='flex items-center justify-center w-full  gap-4 px-2 md:px-4'>
+        <img src={thumbnail ? thumbnail : undefined} alt={"comic1"} className='object-center   rounded-2xl max-w-[40px] max-h-[30px] min-w-[30px] md:max-w-[30px] md:max-h-[40px] md:min-w-[40px]' width={50} height={50}/>
         {/* <Image src={myImage} alt={"comic1"} className='object-center   rounded-2xl ' width={50} height={50}/> */}
         <div className='flex flex-col justify-between w-full gap-1'>
             <p className='text-[10px] md:text-[16px] text-foreground text-left truncate px-0'>{title}</p>

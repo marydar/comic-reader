@@ -11,6 +11,12 @@ import { useRouter } from 'next/navigation'
 import { useGetChapterAdjacent } from '@/features/chapter/api/use-get-chapter-adjacent'
 import { useRef, useEffect, useState } from 'react'
 import { stat } from 'fs'
+import TopBar from './top-bar'
+import BottomBar from './bottom-bar'
+import { FaCircleChevronUp } from 'react-icons/fa6'
+import { cn } from "@/lib/utils";
+import AutoScroll from './auto-scroll'
+
 
 
 
@@ -19,9 +25,14 @@ const ChapterPage = () => {
     const chapterSlug = useChapterSlug();
   const comicId = useComicId();
   const [prevStatus, setPrevStatus] = useState<string>("");
+  const [nextChapterStatus, setNextChapterStatus] = useState<"Loading next chapter" | "No More Chapters" | "">("");
+  const [showBar, setShowBar] = useState(false);
+  const [autoScroll, setAutoScroll] = useState(false);
+  
 
   const bottomSentinelRef = useRef<HTMLDivElement | null>(null);
   const topSentinelRef = useRef<HTMLDivElement | null>(null);
+
   // Always compute order safely (or undefined)
   const match = chapterSlug?.match(/^ch_(\d+)$/);
   const order = match ? parseInt(match[1], 10) : undefined;
@@ -33,6 +44,9 @@ const ChapterPage = () => {
     chapterId: chapter.data? chapter.data?._id : undefined,
   });
   const {data:chapterAdj} = useGetChapterAdjacent({comicId, order})
+
+
+
   useEffect(() => {
   if (!bottomSentinelRef.current) return;
 
@@ -43,7 +57,11 @@ const ChapterPage = () => {
       if (status === "CanLoadMore") {
         loadMore();
       } else if (status === "Exhausted" && chapterAdj?.next) {
+        setNextChapterStatus("");
         handleNext();
+      }
+      else if(status === "Exhausted" && !chapterAdj?.next){
+        setNextChapterStatus("No More Chapters");
       }
     },
     { threshold: 1 }
@@ -67,7 +85,10 @@ useEffect(() => {
       //   setPrevStatus(status);
       // }
       if (chapterAdj?.prev && status !== "LoadingMore" && prevStatus === "LoadingFirstPage") {
-        handlePrev();
+        // handlePrev();
+        // //scroll a little lower to avoid top sentinel
+        // window.scrollBy(0, -100);
+        
       }
       // if (chapterAdj?.prev && status === "Exhausted" && prevStatus === "LoadingFirstPage") {
       //   handlePrev();
@@ -80,10 +101,17 @@ useEffect(() => {
   observer.observe(topSentinelRef.current);
   return () => observer.disconnect();
 }, [status, chapterAdj]);
-
+  const toggleShowBar = () => {
+    console.log("toggleShowBar")
+    setShowBar(!showBar);
+  }
+  const goToUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation()
+    window.scrollTo({top: 0, behavior: 'smooth'})
+  }
 
   const handleNext = () => {
-    if(!chapterAdj?.next) return <>nomore chapters</>
+    if(!chapterAdj?.next) return <>no more chapters</>
     router.push(`/comic/${comicId}/ch_${chapterAdj?.next?.order}`)
   }
   const handlePrev = () => {
@@ -91,18 +119,32 @@ useEffect(() => {
     if(!chapterAdj?.prev) return <>nomore chapters</>
     router.push(`/comic/${comicId}/ch_${chapterAdj?.prev?.order}`)
   }
+  const handleGoToComicPage = () => {
+    router.push(`/comic/${comicId}`)
+  }
+  const autoScrollDown = () => {
+    setAutoScroll(!autoScroll)
+  }
 
-  if (!match) return <>Loading...</>;
-  if (!chapter.data) return <>2Loading...</>;
+  // if (!match) return <>Loading...</>;
+  // if (!chapter.data) return <>2Loading...</>;
   return (
-    <div className='flex flex-col gap-2 w-full justify-center items-center'>
-      {chapter.data?.title}
-        <div ref={topSentinelRef} className="h-1" /> 
+    <div onClick={toggleShowBar} className='flex flex-col gap-2 w-full justify-center items-center relative'>
+      {(!match || !chapter.data) &&(
+        <div className='w-[800px] h-[100vh] bg-primary/40'/>
+      )}
+      {chapter.data &&(
+        <>
+        <TopBar handleGoToComic={handleGoToComicPage} comicName={chapter.data?.title} chapterName={chapter.data?.title} autoScrollDown={autoScrollDown}  showBar={showBar}/>
+        <BottomBar handleNextChapter={handleNext} handlePrevChapter={handlePrev} autoScrollDown={autoScrollDown}  showBar={showBar}/>
+        <div onClick={goToUp} className={cn('fixed bottom-10 right-10  cursor-pointer hidden md:flex')}>
+          <FaCircleChevronUp  className='text-bars-foreground text-4xl hover:scale-120 hover:text-foreground' />
+        </div>
         {results.map((img) => (
           <img key={img._id} src={img.imgUrl ? img.imgUrl : "https://via.placeholder.com/150"} alt="" className='h-full w-[800px] ' />
         ))}
         <div ref={bottomSentinelRef} className="h-1" />
-            {status === "LoadingMore" && (  
+        {status === "LoadingMore" && (  
               <div className="text-center my-2 relative">
                     <hr className="absolute top-1/2 left-0 right-0 border-t border-gray-300"/>
                     <span className="relative inline-block bg-white px-4 py-1 rounded-full text-xs border border-gary-300 shadow-sm">
@@ -110,7 +152,14 @@ useEffect(() => {
                     </span>
                 </div>
             )}
-            <Button onClick={handleNext} disabled={!chapterAdj?.next || !chapterAdj} className='bg-primary text-white w-full'>Next</Button>
+        <div className='text center text-primary/40 text-sm'>{nextChapterStatus}</div>
+        <AutoScroll show={autoScroll}/>
+        </>
+        
+      )}
+        {/* <div ref={topSentinelRef} className="" />  */}
+            
+            {/* <Button onClick={handleNext} disabled={!chapterAdj?.next || !chapterAdj} className='bg-primary text-white w-full'>Next</Button> */}
     </div>
   )
 }
