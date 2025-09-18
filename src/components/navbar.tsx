@@ -99,32 +99,34 @@ export function Navbar() {
                 <UserButton variant="background"/>
                 {/* <Link className="text-[14px] px-5  py-3 text-primary bg-background hover:bg-background/90 cursor-pointer rounded-xl " href="/">Login</Link> */}
             </div>
-            <div className="md:hidden flex items-center justify-center">
-            <DropdownMenu modal={false}>
+            <div className="md:hidden flex items-center justify-center gap-4">
+            <Sun className={cn("text-primary-foreground text-[14px] cursor-pointer flex", resolvedTheme === "light" && "hidden")} onClick={toggleTheme}/>
+            <Moon className={cn("text-primary-foreground text-[14px] cursor-pointer flex", resolvedTheme === "dark" && "hidden")} onClick={toggleTheme}/>
+            <DropdownMenu modal={false} >
             <DropdownMenuTrigger className='outline-none relative'>
                 <MenuIcon className="text-primary-foreground text-[24px] cursor-pointer md:hidden" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
-                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+            <DropdownMenuContent align="center" side="bottom" className='w-[350px] mr-3 mt-5 bg-background/80 text-primary flex md:hidden flex-col backdrop-blur-md'>
+                <DropdownMenuItem className='h-10  text-primary flex flex-col'>
                     <Link className="text-[14px] px-2" href="/">Home</Link>
                 </DropdownMenuItem>
-                    <Separator/>
-                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                    
+                <DropdownMenuItem className='h-10  text-primary flex flex-col'>
                     <Link className="text-[14px] px-2" href="/browse">Browse</Link>
                 </DropdownMenuItem>
-                    <Separator/>
-                <DropdownMenuItem className='h-10 bg-background text-primary flex justify-left ' onClick={()=>{setOpen(true)}}>
+                    
+                <DropdownMenuItem className='h-10 text-primary flex flex-col ' onClick={()=>{setOpen(true)}}>
                     {/* <div className="flex justify-between  bg-background text-primary" onClick={()=>{setOpen(true)}}> */}
                         {/* <div className="flex text-left bg-amber-700 pr-2"> */}
-                        <Search className=" text-primary"/>
+                        {/* <Search className=" text-primary"/> */}
                         {/* </div> */}
                         
                         <p className="text-primary px-5">Search</p>
                     {/* </div> */}
                 </DropdownMenuItem>
-                    <Separator/>
+                    
                     {data &&
-                <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                <DropdownMenuItem className='h-10  text-primary flex flex-col'>
                         <DropdownMenu modal={false}>
                         <DropdownMenuTrigger className='outline-none relative'>
                             <div className="flex items-center cursor-pointer">
@@ -132,20 +134,20 @@ export function Navbar() {
                                 <p className="text-[14px] px-2">Publish </p>
                             </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4 bg-background text-primary'>
-                            <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                        <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4  text-primary'>
+                            <DropdownMenuItem className='h-10  text-primary flex flex-col'>
                                 <Link className="text-[12px] p-2" href="/publishComic">Publish new Comic</Link>
-                                <Separator/>
+                               
                             </DropdownMenuItem>
-                            <DropdownMenuItem className='h-10 bg-background text-primary flex flex-col'>
+                            <DropdownMenuItem className='h-10  text-primary flex flex-col'>
                                 <Link className="text-[12px] p-2" href="/">Publish new chapter</Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </DropdownMenuItem>
 }               
-                    <Separator/>
-                <DropdownMenuItem className='h-14 bg-background text-primary flex justify-left'>
+                    
+                <DropdownMenuItem className=' text-primary flex flex-col items-center justify-center'>
                     <UserButton variant="primary" />
                     <p className="px-2">User</p>
                 </DropdownMenuItem>

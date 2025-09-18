@@ -20,6 +20,7 @@ import type * as comics from "../comics.js";
 import type * as genres from "../genres.js";
 import type * as http from "../http.js";
 import type * as playlistItem from "../playlistItem.js";
+import type * as playlistSaves from "../playlistSaves.js";
 import type * as playlists from "../playlists.js";
 import type * as subscriptions from "../subscriptions.js";
 import type * as upload from "../upload.js";
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   genres: typeof genres;
   http: typeof http;
   playlistItem: typeof playlistItem;
+  playlistSaves: typeof playlistSaves;
   playlists: typeof playlists;
   subscriptions: typeof subscriptions;
   upload: typeof upload;

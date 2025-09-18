@@ -53,7 +53,7 @@ export default function UserPageNavbar() {
                         <LibraryBig className=' text-2xl'/>
                         <p className='text-[12px] md:text-[14px] '>your Comic Lists</p>
                     </div>
-                    <div className={cn('flex flex-col md:flex-row  gap-2 items-center justify-center text-primary hover:bg-primary/40 cursor-pointer p-2 rounded-lg hover:border-1 hover:border-primary', isActive === "savedComicLists" && "bg-primary text-primary-foreground")}>
+                    <div onClick={()=>router.push(`/user/${userId}/savedComicLists`)} className={cn('flex flex-col md:flex-row  gap-2 items-center justify-center text-primary hover:bg-primary/40 cursor-pointer p-2 rounded-lg hover:border-1 hover:border-primary', isActive === "savedComicLists" && "bg-primary text-primary-foreground")}>
                         <MdLibraryAddCheck className=' text-2xl'/>
                         <p className='text-[12px] md:text-[14px] '>Saved Comic Lists</p>
                     </div>

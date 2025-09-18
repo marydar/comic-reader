@@ -135,6 +135,13 @@ export const getPlaylistsPagination = query({
     if(args.creatorId){
       playlists = playlists.filter((pl) => pl.creatorId === args.creatorId);
     }
+    if(args.savedByUserId){
+       const playlistSaves = await ctx.db
+        .query("playlistSave")
+        .filter((q) => q.eq(q.field("userId"), args.savedByUserId))
+        .collect();
+        playlists = playlists.filter((pl) => playlistSaves.some((ps) => ps.playlistId === pl._id));
+    }
     const result :PlaylistInformation[] = await Promise.all(
         playlists.map(async (playlist) => {
           const playlistItems = await ctx.db
@@ -196,6 +203,45 @@ export const getPlaylistsPagination = query({
     };
   },
   
+});
+
+export const getPlaylistById = query({
+  args: {
+    playlistId: v.id("playlists"),
+  },
+  handler: async (ctx, args) => {
+    const playlist = await ctx.db.get(args.playlistId);
+    if(!playlist) return null;
+    const Comics = await ctx.db
+      .query("playlistItems")
+      .withIndex("by_playlist", (q) => q.eq("playlistId", args.playlistId))
+      .collect();
+    const numberOfComics = Comics.length;
+    const playlistSaves = await ctx.db
+      .query("playlistSave")
+      .withIndex("by_playlist", (q) => q.eq("playlistId", args.playlistId))
+      .collect();
+    const numberOfSaves = playlistSaves.length;
+    const creator = await ctx.db
+      .query("users")
+      .withIndex("by_id", (q) => q.eq("_id", playlist.creatorId))
+      .unique();
+    let creatorName = "unknown";
+    // let creatorId: Id<"users">|null = null;
+    if(creator?.name){
+      creatorName = creator.name;
+    }
+    // if(!creator){
+    //   creatorId = null;
+    // }
+    return {
+      ...playlist,
+      numberOfComics,
+      numberOfSaves,
+      creatorName,
+      
+    };
+  },
 });
 
 
