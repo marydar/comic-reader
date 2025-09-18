@@ -72,3 +72,16 @@ export const getSubscribedComicsByUser = query({
         return comics.filter(Boolean);
     },
 });
+
+export const getNumberOfSubscriptions = query({
+    args: {
+        comicId: v.id("comics"),
+    },
+    handler: async (ctx, args) => {
+        const subscriptions = await ctx.db
+            .query("subscriptions")
+            .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+            .collect();
+        return subscriptions.length;
+    },
+});

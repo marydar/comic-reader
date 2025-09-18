@@ -14,10 +14,11 @@ interface Props {
     handleNextChapter: () => void;
     handlePrevChapter: () => void;
     autoScrollDown: () => void;
+    setShowChapterListModal: (show: boolean) => void;
     showBar: boolean;
 }
 
-export default function BottomBar({handleNextChapter, handlePrevChapter,autoScrollDown, showBar}: Props) {
+export default function BottomBar({handleNextChapter, handlePrevChapter,autoScrollDown, showBar, setShowChapterListModal}: Props) {
   return (
     <div onClick={(e)=>{e.stopPropagation()}} className={cn('justify-center items-center w-full h-16  bg-bars/80 bottom-0 fixed backdrop-blur-sm z-50 flex', !showBar && 'hidden')}>
         <div className='flex items-center justify-center w-full md:w-[1200px] h-full'>
@@ -36,7 +37,7 @@ export default function BottomBar({handleNextChapter, handlePrevChapter,autoScro
 
                 {/* <MdNavigateBefore className='text-primary text-4xl cursor-pointer' /> */}
                 <GrCaretNext  onClick={handlePrevChapter} className='text-bars-foreground text-xl md:text-3xl cursor-pointer rotate-180 hover:scale-120 hover:text-foreground' />
-                <FaBars className='text-bars-foreground text-2xl md:text-4xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
+                <FaBars onClick={() => setShowChapterListModal(true)} className='text-bars-foreground text-2xl md:text-4xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                 {/* <MdNavigateNext className='text-primary text-4xl text-center cursor-pointer' /> */}
                 <GrCaretNext  onClick={handleNextChapter} className='text-bars-foreground text-xl md:text-3xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
 

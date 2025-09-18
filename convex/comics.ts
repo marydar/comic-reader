@@ -4,6 +4,7 @@ import { v } from "convex/values";
 import { genreEnum } from "./genres";
 import { query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel"; 
+import { auth } from "./auth";
 
 
 const setComicGenres = mutation({
@@ -102,12 +103,35 @@ export const getComicById = query({
       .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
       .collect();
     const creator = await ctx.db.get(comic.creatorId); 
+    let bookmarkChapterOrder = null;
+    const authUserId = await getAuthUserId(ctx);
+    if(authUserId){
+      const bookmarkChapter = await ctx.db
+        .query("chapterBookmark")
+        .withIndex("by_comic_and_user", (q) => q.eq("comicId", comic._id).eq("userId", authUserId))
+        .unique();
+      if(bookmarkChapter){
+        const chapter = await ctx.db.get(bookmarkChapter.chapterId);
+        if(chapter) {bookmarkChapterOrder = chapter.order};
+      }
+    }
+    if(!bookmarkChapterOrder){
+      const chapter = await ctx.db
+        .query("chapters")
+        .withIndex("by_comic", (q) => q.eq("comicId", comic._id))
+        .order("asc")
+        .first();
+      if(chapter){
+        bookmarkChapterOrder = chapter.order;
+      }
+    }
     return {
       ...comic,
       thumbnail: await ctx.storage.getUrl(comic.thumbnail),
       header: await ctx.storage.getUrl(comic.header),
       genres: comicGenres.map((genre) => genre.genre),
       creator,
+      bookmarkChapterOrder: bookmarkChapterOrder
     };
   },
 });
@@ -201,7 +225,7 @@ export const getComics = query({
     const start = (args.page - 1) * args.pageSize;
     const end = start + args.pageSize;
     comicDocs = comicDocs.slice(start, end);
-    
+    const authUserId = await getAuthUserId(ctx);
     const comicsWithUrls = await Promise.all(
       comicDocs.map(async (comic) => ({
         ...comic,

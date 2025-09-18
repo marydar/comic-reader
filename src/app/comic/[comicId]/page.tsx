@@ -33,6 +33,7 @@ import ComicPageSkeleton from './comicPage-skeleton'
 import ChapterList from '@/features/chapter/components/chapter-list'
 import { Id } from '../../../../convex/_generated/dataModel'
 import { useGetChapters } from '@/features/chapter/api/use-get-chapters'
+import { useGetNumberOfSubscriptions } from '@/features/subscription/api/use-get-number-of-subscription'
 
 type Chapter = {
   _id: Id<"chapters">;
@@ -56,10 +57,11 @@ const ComicPage = () => {
   const {mutate:removeSubscription, isPending:isPendingRemoveSubscription} = useRemoveSubscription()
   const {data:playlistsWithComic, isLoading:isLoadingPlaylistsWithComic} = useGetPlaylistsByComicId({comicId})
   const {data:numberOfViews, isLoading:isLoadingNumberOfViews} = useGetViews({comicId})
+  const {data:numberOfSubscriptions, isLoading:isLoadingSubscriptions} = useGetNumberOfSubscriptions({comicId})
   const {data:numberOfChapters, isLoading:isLoadingNumberOfChapters} = useGetNumberOfChapters({comicId})
-  const {results:comicChapters, status, loadMore} = useGetChapters({comicId})
-  const [isSubscribed, setIsSubscribed] = useState(false);
   const [sortOption, setSortOption] = useState<"asc" | "desc">("desc");
+  const {results:comicChapters, status, loadMore} = useGetChapters({comicId, sortOption})
+  const [isSubscribed, setIsSubscribed] = useState(false);
   useEffect(() => {
     if (currentUser?.data) {
       if(isComicSubscribed){
@@ -90,6 +92,7 @@ const ComicPage = () => {
       likes: chapter.likes,
       views: chapter.views,
       order: chapter.order,
+      isSeen: chapter.isSeen,
     }));
     const handleViewAllPlaylists = () => {
       router.push(`/comic/${comicId}/comicLists`)
@@ -97,6 +100,11 @@ const ComicPage = () => {
     const handlePublisher = (userId: string|undefined) => {
       if(!userId) return
       router.push(`/user/${userId}`)
+    }
+    const handleBookmark = () =>{
+      if(data?.bookmarkChapterOrder){
+        router.push(`/comic/${comicId}/ch_${data.bookmarkChapterOrder}`)
+      }
     }
     const handleAddNewChapter = () => {
       if(!currentUser.data || !data) return
@@ -134,7 +142,7 @@ const ComicPage = () => {
     }
   return (
     <div className='flex justify-center w-full'>
-      {(isLoading || status === "LoadingFirstPage") && <ComicPageSkeleton/>}
+      {(isLoading) && <ComicPageSkeleton/>}
       {!isLoading && data && (
       <>
       <AddToPlaylistModal open={showAddToPlaylistModal} onOpenChange={setShowAddToPlaylistModal}/>
@@ -163,11 +171,11 @@ const ComicPage = () => {
                 <div className='flex justify-left items-start gap-2 md:gap-4 '>
                     <div className='flex items-center ' >
                         <Eye className='text-primary text-2xl'/>
-                        <span className='text-foreground text-[10px] md:text-[12px] px-1 '>{numberOfViews}</span>
+                        <span className='text-foreground text-[10px] md:text-[12px] px-1 '>{numberOfViews ?? 0}</span>
                     </div>
                     <div className='flex items-center '>
                         <RiUserFollowLine className='text-primary text-2xl'/>
-                        <span className='text-foreground text-[10px] md:text-[12px] px-1'>230M</span>
+                        <span className='text-foreground text-[10px] md:text-[12px] px-1'>{numberOfSubscriptions ?? 0}</span>
                     </div>
                 </div>
                 <p className='text-foreground text-[12px] md:text-[16px] px-1'>Description</p>
@@ -175,7 +183,7 @@ const ComicPage = () => {
                     <p className='text-foreground/70 text-[12px] md:text-[14px] px-1'>{data.description}{data.description}{data.description}{data.description}</p>
                 </div>
                 <div className='flex w-full justify-baseline items-center gap-4 py-4 flex-col md:flex-row'>
-                <Button className='bg-primary md:w-[200px] w-full cursor-pointer'>
+                <Button onClick={handleBookmark} className='bg-primary md:w-[200px] w-full cursor-pointer'>
                   
                     {currentUser.data && <Bookmark className='text-primary-foreground'/>}
                     {currentUser.data ? "Continue reading" : "Start reading"}
@@ -198,7 +206,7 @@ const ComicPage = () => {
         <div className=' py-1 md:py-8 flex flex-col  h-[300px] md:h-[600px]'>
             <p className='md:px-12 px-4  text-foreground text-l md:text-2xl text-left'>You may also like</p>
             <div className='p-1 md:p-4 flex justify-center'>
-              {isLoading && <ComicGridRowSkeleton/>}
+              {isLoading  && <ComicGridRowSkeleton/>}
               
                         {!isLoading && data && (
                           <ComicGridRow comics={comics}/>

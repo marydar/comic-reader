@@ -16,18 +16,30 @@ import BottomBar from './bottom-bar'
 import { FaCircleChevronUp } from 'react-icons/fa6'
 import { cn } from "@/lib/utils";
 import AutoScroll from './auto-scroll'
+import { useCurrentUser } from '@/features/auth/api/use-current-user'
+import  { useAddView } from '@/features/chapter/api/use-add-view'
+import { useGetNumberOfChapters } from '@/features/comic/api/use-get-comic-numberOf-chapters'
+import { useGetChapters } from '@/features/chapter/api/use-get-chapters'  
+import ChapterListModal from './chapter-list-modal'
 
 
 
 
 const ChapterPage = () => {
   const router = useRouter();
-    const chapterSlug = useChapterSlug();
+  const chapterSlug = useChapterSlug();
   const comicId = useComicId();
+  const currentUser = useCurrentUser();
   const [prevStatus, setPrevStatus] = useState<string>("");
   const [nextChapterStatus, setNextChapterStatus] = useState<"Loading next chapter" | "No More Chapters" | "">("");
   const [showBar, setShowBar] = useState(false);
   const [autoScroll, setAutoScroll] = useState(false);
+  const {mutate:addView } = useAddView()
+  const [viewAdded, setViewAdded] = useState(false)
+  const [showChapterListModal, setShowChapterListModal] = useState(false)
+
+  
+    
   
 
   const bottomSentinelRef = useRef<HTMLDivElement | null>(null);
@@ -44,9 +56,34 @@ const ChapterPage = () => {
     chapterId: chapter.data? chapter.data?._id : undefined,
   });
   const {data:chapterAdj} = useGetChapterAdjacent({comicId, order})
+  const userId = currentUser?.data?._id
+  const chapterId = chapter?.data?._id
 
-
-
+  const addViewToChapter = async()=>{
+    if(!currentUser.data) return
+    if(!chapter.data) return
+    console.log("add view")
+    await addView({chapterId: chapter.data._id},
+      {
+        onSuccess:()=>{
+          console.log("success")
+        },
+        onError:()=>{
+          console.log("error")
+        },
+        onSettled:()=>{
+          console.log("settled")
+        }
+      }
+    )
+  }
+  useEffect(() => {
+    console.log("want to add view", currentUser.data)
+    if(chapterId && userId && !viewAdded){
+      setViewAdded(true)
+      addViewToChapter()
+    }
+  }, [chapterId,userId, viewAdded])
   useEffect(() => {
   if (!bottomSentinelRef.current) return;
 
@@ -135,8 +172,9 @@ useEffect(() => {
       )}
       {chapter.data &&(
         <>
+        <ChapterListModal open={showChapterListModal} onOpenChange={setShowChapterListModal}/>
         <TopBar handleGoToComic={handleGoToComicPage} comicName={chapter.data?.title} chapterName={chapter.data?.title} autoScrollDown={autoScrollDown}  showBar={showBar}/>
-        <BottomBar handleNextChapter={handleNext} handlePrevChapter={handlePrev} autoScrollDown={autoScrollDown}  showBar={showBar}/>
+        <BottomBar handleNextChapter={handleNext} handlePrevChapter={handlePrev} autoScrollDown={autoScrollDown}  showBar={showBar} setShowChapterListModal={setShowChapterListModal}/>
         <div onClick={goToUp} className={cn('fixed bottom-10 right-10  cursor-pointer hidden md:flex')}>
           <FaCircleChevronUp  className='text-bars-foreground text-4xl hover:scale-120 hover:text-foreground' />
         </div>

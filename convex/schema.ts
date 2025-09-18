@@ -76,6 +76,27 @@ const schema = defineSchema({
     // Your other columns...
   })
   .index("by_chapter", ["chapterId"]),
+  chapterViews: defineTable({
+    chapterId: v.id("chapters"),
+    userId: v.id("users"),
+    // Your other columns...
+  })
+  .index("by_chapter", ["chapterId"])
+  .index("by_user", ["userId"])
+  .index("by_chapter_and_user", ["chapterId", "userId"]),
+
+  chapterBookmark : defineTable({
+    comicId : v.id("comics"),
+    userId: v.id("users"),
+    chapterId: v.id("chapters"),
+    // Your other columns...
+  })
+  .index("by_chapter", ["chapterId"])
+  .index("by_user", ["userId"])
+  .index("by_comic", ["comicId"])
+  .index("by_chapter_and_user", ["chapterId", "userId"])
+  .index("by_comic_and_user", ["comicId", "userId"]),
+
   // Your other tables...
 });
  

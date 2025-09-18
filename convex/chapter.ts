@@ -3,6 +3,7 @@ import { mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
+import { auth } from "./auth";
 export const createChapter = mutation({
   args: {
     comicId: v.id("comics"),
@@ -59,11 +60,39 @@ export const addView = mutation({
     chapterId: v.id("chapters"),
   },
   handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx);
+    if(!authUserId) throw new Error("Not authenticated");
     const chapter = await ctx.db.get(args.chapterId);
     if(!chapter) throw new Error("Chapter not found");
+    const chapterBookmark = await ctx.db
+      .query("chapterBookmark")
+      .withIndex("by_comic_and_user", (q) => q.eq("comicId", chapter.comicId).eq("userId", authUserId))
+      .unique();
+    if(chapterBookmark) {
+      await ctx.db.patch(chapterBookmark._id, {
+        chapterId: args.chapterId,
+      })
+    }
+    else{
+      await ctx.db.insert("chapterBookmark", {
+        comicId: chapter.comicId,
+        chapterId: args.chapterId,
+        userId: authUserId,
+      });
+    }
+    const chapterView = await ctx.db
+      .query("chapterViews")
+      .withIndex("by_chapter_and_user", (q) => q.eq("chapterId", args.chapterId).eq("userId", authUserId))
+      .unique();
+    if(chapterView) return null;
+    await ctx.db.insert("chapterViews", {
+      chapterId: args.chapterId,
+      userId: authUserId,
+    });
     await ctx.db.patch(args.chapterId, {
       views: chapter.views + 1,
     });
+    
     return args.chapterId;
   },
 });
@@ -103,6 +132,7 @@ export const getChapters = query({
     paginationOpts: paginationOptsValidator
   },
   handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx);
     const comic = await ctx.db.get(args.comicId);
     if(!comic) throw new Error("Comic not found");
     let order : "asc" | "desc" = "desc";
@@ -125,6 +155,13 @@ export const getChapters = query({
           chapters.page.map(async (chapter) => ({
             ...chapter,
             thumbnail:chapter.thumbnail? await ctx.storage.getUrl(chapter.thumbnail) : undefined,
+            isSeen: authUserId ?
+             await ctx.db
+              .query("chapterViews")
+              .withIndex("by_chapter_and_user", (q) => q.eq("chapterId", chapter._id).eq("userId", authUserId))
+              .unique()
+              .then((chapterView)=>chapterView ? true : false)
+              : false,
           }))
         )
       )

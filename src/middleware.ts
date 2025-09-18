@@ -11,7 +11,7 @@ const isPublishPage = createRouteMatcher(["/publishComic"]);
  
 export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   if (isAuthPage(request) && (await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, "/home");
+    return nextjsMiddlewareRedirect(request, "/");
   }
   if (isPublishPage(request) && !(await convexAuth.isAuthenticated())) {
     return nextjsMiddlewareRedirect(request, "/home");
