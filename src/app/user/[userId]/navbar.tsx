@@ -16,7 +16,7 @@ export default function UserPageNavbar() {
         // map routes to isActive values
         const getActive = (path: string) => {
             if (path === `/user/${userId}/account`) return "account";
-            if (path.startsWith(`/user/${userId}/recent`)) return "recent";
+            if (path.startsWith(`/user/${userId}/history`)) return "recent";
             if (path.startsWith(`/user/${userId}/publishedComics`)) return "publishedComics";
             if (path.startsWith(`/user/${userId}/subscribedComics`)) return "subscribedComics";
             if (path.startsWith(`/user/${userId}/comicLists`)) return "comicLists";
@@ -37,8 +37,8 @@ export default function UserPageNavbar() {
                         <User className='text-2xl'/>
                         <p className='text-[12px] md:text-[14px]'>Account Information</p>
                     </div>
-                    <div className={cn('flex flex-col md:flex-row  gap-2 items-center justify-center text-primary hover:bg-primary/40 cursor-pointer p-2 rounded-lg hover:border-1 hover:border-primary', isActive === "recent" && "bg-primary text-primary-foreground")}>
-                        <History className=' text-2xl'/>
+                    <div onClick={()=>router.push(`/user/${userId}/history`)} className={cn('flex flex-col md:flex-row  gap-2 items-center justify-center text-primary hover:bg-primary/40 cursor-pointer p-2 rounded-lg hover:border-1 hover:border-primary', isActive === "recent" && "bg-primary text-primary-foreground")}>
+                        <History  className=' text-2xl text-center'/>
                         <p className='text-[12px] md:text-[14px] '>Recent Reads</p>
                     </div>
                     <div onClick={()=>router.push(`/user/${userId}/publishedComics`)} className={cn('flex flex-col md:flex-row  gap-2 items-center justify-center text-primary hover:bg-primary/40 cursor-pointer p-2 rounded-lg hover:border-1 hover:border-primary', isActive === "publishedComics" && "bg-primary text-primary-foreground")}>

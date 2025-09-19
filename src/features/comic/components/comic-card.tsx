@@ -3,13 +3,16 @@ import Image from 'next/image'
 import myImage from "@/app/home/imgs/thumbnail.webp"
 import Link from 'next/link'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import GenreButton from '@/components/genre-button'
 interface ComicCardProps {
     _id: string;
     title: string;
     views: number;
     thumbnail: string | null;
+    genres: string[];
+    description: string;
 }
-export default function ComicCard({_id,title, views, thumbnail}: ComicCardProps) {
+export default function ComicCard({_id,title, views, thumbnail, genres, description}: ComicCardProps) {
   return (
     <>
         <div className='min-w-[150px] max-w[150px] h-[240px] md:min-w-[250px] md:max-w-[250px] md:h-[400px] bg-primary rounded-2xl cursor-grab'>
@@ -23,9 +26,16 @@ export default function ComicCard({_id,title, views, thumbnail}: ComicCardProps)
                   </div>
               </TooltipTrigger>
               <TooltipContent className='bg-bars/40 backdrop-blur-lg rounded-2xl min-w-[120px] max-w[120px]  md:min-w-[220px] md:max-w-[220px] h-[180px] md:h-[300px]'>
-                <div className='flex flex-col gap-2 p-4 md:p-8  '>
-                  <p className='text-[12px] md:text-[14px] text-foreground'>{title}</p>
-                  <p className='text-[8px] md:text-[12px] text-foreground/70 text-center'>{views} views</p>
+                <div className='flex flex-col gap-2 p-2  '>
+                  <p className='text-[12px] md:text-[14px] text-foreground text-center truncate'>{title}</p>
+                  <div className=' grid  grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 my-4 max-h-[80px] overflow-hidden'>
+                      {genres?.map((genre : string) => (
+                      <GenreButton key={genre} genre={genre} variant='show'/>
+                      ))}
+
+                  </div>
+                  <p className='text-[8px] md:text-[12px] text-foreground/70 text-left max-h-[110px] overflow-hidden '>{description}</p>
+                  
                 </div>
               </TooltipContent>
             </Tooltip>

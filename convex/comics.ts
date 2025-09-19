@@ -84,8 +84,10 @@ export const getAllComics = query({
         ...comic,
         thumbnail: await ctx.storage.getUrl(comic.thumbnail),
         header: await ctx.storage.getUrl(comic.header),
+        genres: await ctx.db.query("comicGenres").withIndex("by_comic", (q) => q.eq("comicId", comic._id)).collect().then((genres)=>genres.map((g)=>g.genre)),
       }))
     );
+    
 
     return comicsWithUrls;
   },
@@ -146,6 +148,7 @@ export const getComics = query({
     playlistId: v.optional(v.id("playlists")),
     subscriberId: v.optional(v.id("users")),
     creatorId: v.optional(v.id("users")),
+    historyOfUserId: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
     let comicDocs: Doc<"comics">[] = [];
@@ -180,6 +183,19 @@ export const getComics = query({
     if(args.creatorId){
       comicDocs = comicDocs.filter((c) => c.creatorId === args.creatorId);
     }
+    if(args.historyOfUserId){
+      const seenChaptersIds = await ctx.db
+        .query("chapterViews")
+        .filter((q) => q.eq(q.field("userId"), args.historyOfUserId))
+        .collect();
+      const chapters = await Promise.all(
+        seenChaptersIds.map((seenChaptersId) => ctx.db.get(seenChaptersId.chapterId))
+      );
+      const chaptersNotNull = chapters.filter((c)=> c !== null);
+      const comicIds = chaptersNotNull.map((chapter) => chapter.comicId);
+      comicDocs = comicDocs.filter((c) => comicIds.includes(c._id));
+    }
+        
 
 
     if (args.genres && args.genres.length > 0) {
@@ -231,6 +247,7 @@ export const getComics = query({
         ...comic,
         thumbnail: await ctx.storage.getUrl(comic.thumbnail),
         header: await ctx.storage.getUrl(comic.header),
+        genres: await ctx.db.query("comicGenres").withIndex("by_comic", (q) => q.eq("comicId", comic._id)).collect().then((genres)=>genres.map((g)=>g.genre)),
       }))
     );
     return {
@@ -263,6 +280,7 @@ export const getPopularComicsByGenre = query({
         ...comic,
         thumbnail: await ctx.storage.getUrl(comic.thumbnail),
         header: await ctx.storage.getUrl(comic.header),
+        genres: await ctx.db.query("comicGenres").withIndex("by_comic", (q) => q.eq("comicId", comic._id)).collect().then((genres)=>genres.map((g)=>g.genre)),
       }))
     );
 

@@ -32,6 +32,7 @@ export default function ChapterListModal({ open, onOpenChange }: { open: boolean
     views: chapter.views,
     order: chapter.order,
     isSeen: chapter.isSeen,
+    numberOfLikes: chapter.numberOfLikes,
   }));
 
   return (

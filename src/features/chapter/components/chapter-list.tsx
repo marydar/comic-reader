@@ -14,6 +14,7 @@ type Chapter = {
   views: number;
   order: number;
   isSeen: boolean;
+  numberOfLikes: number;
   
 }
 
@@ -42,7 +43,7 @@ export default function ChapterList({chapters, numberOfChapters, handleAddNewCha
       }
     }
     return (
-    <div className={cn('flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl border-primary border-1 my-4 md:my-10 max-h-[500px] md:max-h-[800px] ', isModal && 'w-[150px] md:w-[200px] lg:w-[450px] max-h-[500px] md:max-h-[500px] my-2 md:my-4')}>
+    <div className={cn('flex flex-col  w-[350px] md:w-[800px] lg:w-[1200px]  bg-background rounded-2xl border-primary border-1 my-4 md:my-10 max-h-[500px] md:max-h-[800px] ', isModal && 'w-[290px] md:w-[200px] lg:w-[450px] max-h-[500px] md:max-h-[500px] my-2 md:my-4')}>
             <div className=' bg-primary/40 rounded-t-2xl text-center text-[12px] md:text-[18px] text-foreground p-4 md:p-4 flex justify-between items-center '>
             <div className='px-4'>
                 <p>Chapters</p>
@@ -64,7 +65,7 @@ export default function ChapterList({chapters, numberOfChapters, handleAddNewCha
               {(numberOfChapters === 0 || numberOfChapters === undefined) && <p className='text-[12px] md:text-[14px] text-foreground/70 p-4 text-center'>no chapters available</p>}
               {chapters.map((chapter) => (
                 
-                <ChapterCard key={chapter._id} _id={chapter._id} title={chapter.title} views={230} likes={230} order={chapter.order} createdAt={chapter.createdAt} thumbnail={chapter.thumbnail} comicId={comicId} isSeen={chapter.isSeen}/>
+                <ChapterCard key={chapter._id} _id={chapter._id} title={chapter.title} views={230} likes={230} order={chapter.order} createdAt={chapter.createdAt} thumbnail={chapter.thumbnail} comicId={comicId} isSeen={chapter.isSeen} numberOfLikes={chapter.numberOfLikes}/>
               ))}
                
                <div

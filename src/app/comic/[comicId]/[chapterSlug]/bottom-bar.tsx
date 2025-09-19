@@ -2,7 +2,7 @@ import React from 'react'
 import my_image from '../../../home/imgs/image.png'
 import Image from 'next/image'
 import { FaComment, FaFileLines } from "react-icons/fa6";
-import { Heart } from 'lucide-react';
+import { Heart, HeartMinus, HeartMinusIcon, HeartPlus } from 'lucide-react';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import {GrCaretNext} from 'react-icons/gr';
 import { FaBars, FaCommentAlt } from 'react-icons/fa';
@@ -15,10 +15,12 @@ interface Props {
     handlePrevChapter: () => void;
     autoScrollDown: () => void;
     setShowChapterListModal: (show: boolean) => void;
+    isLiked: boolean | null;
+    toggleLike: () => void;
     showBar: boolean;
 }
 
-export default function BottomBar({handleNextChapter, handlePrevChapter,autoScrollDown, showBar, setShowChapterListModal}: Props) {
+export default function BottomBar({handleNextChapter, handlePrevChapter,autoScrollDown, showBar, setShowChapterListModal, isLiked, toggleLike}: Props) {
   return (
     <div onClick={(e)=>{e.stopPropagation()}} className={cn('justify-center items-center w-full h-16  bg-bars/80 bottom-0 fixed backdrop-blur-sm z-50 flex', !showBar && 'hidden')}>
         <div className='flex items-center justify-center w-full md:w-[1200px] h-full'>
@@ -29,7 +31,14 @@ export default function BottomBar({handleNextChapter, handlePrevChapter,autoScro
 
                  <div className='items-center justify-center absolute left-0 p-4 hidden md:flex'>
                     <div className='flex justify-center items-center gap-8'>
-                        <Heart className='text-bars-foreground text-4xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
+                        {isLiked ? (
+                            <HeartMinus onClick={toggleLike} className='text-bars-foreground text-4xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
+
+                        ):
+                        (
+                            <HeartPlus onClick={toggleLike} className='text-bars-foreground text-4xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
+                        )
+                        }
                         <FaRegComment className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                     </div>
                 </div>

@@ -63,7 +63,10 @@ const BrowsePage = () => {
     const comics = (paginatedData?.comics ?? []).map((comic) => ({
         _id: comic._id,
         title: comic.title,
-        thumbnail: comic.thumbnail, // safe fallback
+        thumbnail: comic.thumbnail,
+        description: comic.description,
+        genres: comic.genres,
+         // safe fallback
     }));
      const handlePageChange = (page: number) => {
       const params = new URLSearchParams(searchParams);

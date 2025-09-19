@@ -97,17 +97,56 @@ export const addView = mutation({
   },
 });
 
-export const addLike = mutation({
+export const toggleLike = mutation({
   args: {
     chapterId: v.id("chapters"),
   },
   handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx);
+    if(!authUserId) throw new Error("Not authenticated");
     const chapter = await ctx.db.get(args.chapterId);
     if(!chapter) throw new Error("Chapter not found");
-    await ctx.db.patch(args.chapterId, {
-      likes: chapter.likes + 1,
-    });
+    
+    const chapterLike = await ctx.db
+      .query("chapterLikes")
+      .withIndex("by_chapter_and_user", (q) => q.eq("chapterId", args.chapterId).eq("userId", authUserId))
+      .unique();
+    if(chapterLike){
+      await ctx.db.delete(chapterLike._id);
+      await ctx.db.patch(args.chapterId, {
+        likes: chapter.likes -1,
+      });
+    }
+    else{
+      const cl = await ctx.db.insert("chapterLikes", {
+        chapterId: args.chapterId,
+        userId: authUserId,
+      });
+      if(cl){
+        await ctx.db.patch(args.chapterId, {
+          likes: chapter.likes + 1,
+        });
+      }
+
+    }
     return args.chapterId;
+  },
+});
+
+export const getIsLiked = query({
+  args: {
+    chapterId: v.id("chapters"),
+  },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx);
+    if(!authUserId) return false
+    const chapter = await ctx.db.get(args.chapterId);
+    if(!chapter) throw new Error("Chapter not found");
+    const chapterLike = await ctx.db
+      .query("chapterLikes")
+      .withIndex("by_chapter_and_user", (q) => q.eq("chapterId", args.chapterId).eq("userId", authUserId))
+      .unique();
+    return !!chapterLike;
   },
 });
 
@@ -147,6 +186,8 @@ export const getChapters = query({
         .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
         .order(order)
         .paginate(args.paginationOpts);
+
+    
     
     return {
       ...chapters,
@@ -155,6 +196,11 @@ export const getChapters = query({
           chapters.page.map(async (chapter) => ({
             ...chapter,
             thumbnail:chapter.thumbnail? await ctx.storage.getUrl(chapter.thumbnail) : undefined,
+            numberOfLikes: await ctx.db
+              .query("chapterLikes")
+              .withIndex("by_chapter", (q) => q.eq("chapterId", chapter._id))
+              .collect()
+              .then((chapterLikes)=>chapterLikes.length),
             isSeen: authUserId ?
              await ctx.db
               .query("chapterViews")

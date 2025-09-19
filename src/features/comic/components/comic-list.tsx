@@ -15,12 +15,14 @@ import { useEffect } from 'react';
 import { Search } from "lucide-react"
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
+import { useGetViews } from '../api/use-get-comic-views';
 
 type Comic = {
   _id: Id<"comics">;
   title: string;
   thumbnail: string | null;
-//   genres: string[];
+  genres: string[];
+  description: string;
 };
 interface ComicGridRowProps {
   comics: Comic[];
@@ -40,6 +42,7 @@ export default function ComicList({ comics, totalPages, currentPage, selectedGen
     const [currentSelectedGenres, setCurrentSelectedGenres] = useState<string[]>([]);
     const [currentSelectedSort, setCurrentSelectedSort] = useState<string>("views");
     const [currentSearchValue, setCurrentSearchValue] = useState<string>("");
+    
     useEffect(() => {
       setCurrentSelectedGenres(selectedGenres);
       setCurrentSelectedSort(selectedSort);
@@ -51,6 +54,7 @@ export default function ComicList({ comics, totalPages, currentPage, selectedGen
         subscriptions: "subscriptions",
         names: "names",
     };
+    
     const toggleShowFilter = () => {
       setShowFilter(!showFilter);
     };
@@ -146,6 +150,8 @@ export default function ComicList({ comics, totalPages, currentPage, selectedGen
                                 title={comic.title}
                                 views={230}
                                 thumbnail={comic.thumbnail}
+                                genres={comic.genres}
+                                description={comic.description}
                                 />
                                 
                             ))}

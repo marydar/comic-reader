@@ -34,6 +34,7 @@ import ChapterList from '@/features/chapter/components/chapter-list'
 import { Id } from '../../../../convex/_generated/dataModel'
 import { useGetChapters } from '@/features/chapter/api/use-get-chapters'
 import { useGetNumberOfSubscriptions } from '@/features/subscription/api/use-get-number-of-subscription'
+import { describe } from 'node:test'
 
 type Chapter = {
   _id: Id<"chapters">;
@@ -76,7 +77,10 @@ const ComicPage = () => {
     const comics = (allComics ?? []).map((comic) => ({
       _id: comic._id,
       title: comic.title,
-      thumbnail: comic.thumbnail, // safe fallback
+      thumbnail: comic.thumbnail,
+      description: comic.description,
+      genres: comic.genres,
+       // safe fallback
     }));
     const playlists = (playlistsWithComic ?? []).map((pl) => ({
       _id: pl.playlist._id,
@@ -93,6 +97,7 @@ const ComicPage = () => {
       views: chapter.views,
       order: chapter.order,
       isSeen: chapter.isSeen,
+      numberOfLikes: chapter.numberOfLikes,
     }));
     const handleViewAllPlaylists = () => {
       router.push(`/comic/${comicId}/comicLists`)

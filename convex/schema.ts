@@ -97,6 +97,15 @@ const schema = defineSchema({
   .index("by_chapter_and_user", ["chapterId", "userId"])
   .index("by_comic_and_user", ["comicId", "userId"]),
 
+  chapterLikes: defineTable({
+    chapterId: v.id("chapters"),
+    userId: v.id("users"),
+    // Your other columns...
+  })
+  .index("by_chapter", ["chapterId"])
+  .index("by_user", ["userId"])
+  .index("by_chapter_and_user", ["chapterId", "userId"]),
+
   // Your other tables...
 });
  

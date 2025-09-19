@@ -20,6 +20,8 @@ const popularByCategory = () => {
     _id: comic._id,
     title: comic.title,
     thumbnail: comic.thumbnail,
+      description: comic.description,
+      genres: comic.genres,
     // genres: comic.,
      // safe fallback
   }));

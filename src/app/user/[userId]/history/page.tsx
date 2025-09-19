@@ -16,7 +16,7 @@ import { Id } from '../../../../../convex/_generated/dataModel'
 import { useCurrentUser } from '@/features/auth/api/use-current-user'
 import ComicListSkeleton from '@/features/comic/components/comic-list-skeleton'
 
-const PublishedComicsPage = () => {
+const HistoryPage = () => {
   const searchParams = useSearchParams();
   const userId = useUserId();
   const router = useRouter();
@@ -47,10 +47,10 @@ const PublishedComicsPage = () => {
         searchedName: searchValue,
         genres: selectedGenres as Genre[] ?? [],
         sortBy: selectedSort as "views" | "date" | "subscriptions" | "names" ?? "views",
-        subscriberId: userId as Id<"users">,
+        historyOfUserId: userId as Id<"users">,
     });
     
-    const invalidPage = currentPage < 1 || paginatedData&&  currentPage > paginatedData.totalPages;
+    const invalidPage = currentPage < 1 || paginatedData && currentPage > paginatedData.totalPages;
     if(paginatedData?.comics.length === 0){
       
       
@@ -80,7 +80,7 @@ const PublishedComicsPage = () => {
      const handlePageChange = (page: number) => {
       const params = new URLSearchParams(searchParams);
       params.set("page", page.toString());
-      router.push(`/user/${userId}/subscribedComics?${params.toString()}`);
+      router.push(`/user/${userId}/history?${params.toString()}`);
     };
     const handleFilter = (genres: string[], sort: string) => {
       const params = new URLSearchParams(searchParams);
@@ -93,21 +93,21 @@ const PublishedComicsPage = () => {
         
         params.set("genres", genres.join(","));
       }
-      router.push(`/user/${userId}/subscribedComics?${params.toString()}`);
+      router.push(`/user/${userId}/history?${params.toString()}`);
       
     };
     const handleSearch = (search: string) => {
       const params = new URLSearchParams(searchParams);
       params.set("page", currentPage.toString()); // reset page on filter
       params.set("searchValue",search );
-      router.push(`/user/${userId}/subscribedComics?${params.toString()}`);
+      router.push(`/user/${userId}/history?${params.toString()}`);
       
     };
 
   return (
     <div className='flex justify-center items-center w-full'>
       {isLoading && <ComicListSkeleton/>}
-              {!isLoading && paginatedData  && (
+         {!isLoading && paginatedData  && (
         <ComicList
          comics={comics}
          totalPages={paginatedData.totalPages}
@@ -119,9 +119,9 @@ const PublishedComicsPage = () => {
          handleFilter={handleFilter}
          handlePageChange={handlePageChange}
          />
-              )}
+         )}
     </div>
   )
 }
 
-export default PublishedComicsPage
+export default HistoryPage

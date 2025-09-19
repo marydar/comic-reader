@@ -120,7 +120,10 @@ const ComicListPage= () => {
     const comics = (paginatedData.comics ?? []).map((comic) => ({
         _id: comic._id,
         title: comic.title,
-        thumbnail: comic.thumbnail, // safe fallback
+        thumbnail: comic.thumbnail,
+        description: comic.description,
+        genres: comic.genres,
+         // safe fallback
     }));
      const handlePageChange = (page: number) => {
       const params = new URLSearchParams(searchParams);
@@ -176,12 +179,12 @@ const ComicListPage= () => {
                           <div className='flex items-center gap-2 justify-center'>
                               <p className='text-[12px] md:text-[14px] text-primary/70 '>Made by:</p>
                             <div className='flex gap-2 items-center justify-start bg-primary rounded-lg px-2 py-1 cursor-pointer hover:bg-primary/80'>
-                              <div className='flex items-center gap-2'>
                                 <Link href={`/user/${playlist.creatorId}`}>
-                                  <User className='text-foreground text-[10px] md:text-[10px]'/>
-                                  <p className='text-[10px] md:text-[12px] text-foreground'>{playlist.creatorName}</p>
+                                <div className='flex items-center gap-2'>
+                                    <User className='text-foreground text-[10px] md:text-[10px]'/>
+                                    <p className='text-[10px] md:text-[12px] text-foreground'>{playlist.creatorName}</p>
+                                </div>
                                 </Link>
-                              </div>
                             </div>
                           </div>
                           

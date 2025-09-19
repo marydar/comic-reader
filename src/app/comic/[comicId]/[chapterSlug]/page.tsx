@@ -21,6 +21,8 @@ import  { useAddView } from '@/features/chapter/api/use-add-view'
 import { useGetNumberOfChapters } from '@/features/comic/api/use-get-comic-numberOf-chapters'
 import { useGetChapters } from '@/features/chapter/api/use-get-chapters'  
 import ChapterListModal from './chapter-list-modal'
+import { useIsLikedByUser } from '@/features/chapter/api/use-is-liked-by-user'
+import { useToggleLike } from '@/features/chapter/api/use-toggle-like'
 
 
 
@@ -37,6 +39,7 @@ const ChapterPage = () => {
   const {mutate:addView } = useAddView()
   const [viewAdded, setViewAdded] = useState(false)
   const [showChapterListModal, setShowChapterListModal] = useState(false)
+  
 
   
     
@@ -52,12 +55,34 @@ const ChapterPage = () => {
   // Hooks are always called, even if order is undefined
   const chapter = useGetChapterByOrder({comicId, order});
 
+  const {mutate:toggleLike, isPending:isPendingToggleLike} = useToggleLike()
+  const {data:isLiked, isLoading:isLoadingIsLiked} = useIsLikedByUser({chapterId: chapter.data?._id})
+
   const { results, status, loadMore } = useGetChaptersImages({
     chapterId: chapter.data? chapter.data?._id : undefined,
   });
   const {data:chapterAdj} = useGetChapterAdjacent({comicId, order})
   const userId = currentUser?.data?._id
   const chapterId = chapter?.data?._id
+
+  const handleToggleLike = async()=>{
+    if(!currentUser.data) return
+    if(!chapter.data) return
+    console.log("toggle like")
+    await toggleLike({chapterId: chapter.data._id},
+      {
+        onSuccess:()=>{
+          console.log("success")
+        },
+        onError:()=>{
+          console.log("error")
+        },
+        onSettled:()=>{
+          console.log("settled")
+        }
+      }
+    )
+  }
 
   const addViewToChapter = async()=>{
     if(!currentUser.data) return
@@ -174,7 +199,7 @@ useEffect(() => {
         <>
         <ChapterListModal open={showChapterListModal} onOpenChange={setShowChapterListModal}/>
         <TopBar handleGoToComic={handleGoToComicPage} comicName={chapter.data?.title} chapterName={chapter.data?.title} autoScrollDown={autoScrollDown}  showBar={showBar}/>
-        <BottomBar handleNextChapter={handleNext} handlePrevChapter={handlePrev} autoScrollDown={autoScrollDown}  showBar={showBar} setShowChapterListModal={setShowChapterListModal}/>
+        <BottomBar handleNextChapter={handleNext} handlePrevChapter={handlePrev} autoScrollDown={autoScrollDown}  showBar={showBar} setShowChapterListModal={setShowChapterListModal} isLiked={isLiked} toggleLike={handleToggleLike}/>
         <div onClick={goToUp} className={cn('fixed bottom-10 right-10  cursor-pointer hidden md:flex')}>
           <FaCircleChevronUp  className='text-bars-foreground text-4xl hover:scale-120 hover:text-foreground' />
         </div>

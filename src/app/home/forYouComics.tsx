@@ -15,7 +15,10 @@ const ForYouComics = () => {
   const comics = (data ?? []).map((comic) => ({
     _id: comic._id,
     title: comic.title,
-    thumbnail: comic.thumbnail, // safe fallback
+    thumbnail: comic.thumbnail,
+    description: comic.description,
+    genres: comic.genres,
+     // safe fallback
   }));
 
   return (
