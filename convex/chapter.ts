@@ -233,6 +233,7 @@ export const getChapterByOrder = query({
     return {
       ...chapterDoc,
       thumbnail: await ctx.storage.getUrl(chapterDoc.thumbnail),
+      comicName: comic.title,
     };
   },
 });

@@ -189,14 +189,14 @@ useEffect(() => {
   // if (!match) return <>Loading...</>;
   // if (!chapter.data) return <>2Loading...</>;
   return (
-    <div onClick={toggleShowBar} className='flex flex-col gap-2 w-full justify-center items-center relative'>
+    <div onClick={toggleShowBar} className='flex flex-col w-full justify-center items-center relative'>
       {(!match || !chapter.data) &&(
         <div className='w-[800px] h-[100vh] bg-primary/40'/>
       )}
       {chapter.data &&(
         <>
         <ChapterListModal open={showChapterListModal} onOpenChange={setShowChapterListModal}/>
-        <TopBar handleGoToComic={handleGoToComicPage} comicName={chapter.data?.title} chapterName={chapter.data?.title}  showBar={showBar} isLiked={isLiked} toggleLike={handleToggleLike}/>
+        <TopBar handleGoToComic={handleGoToComicPage} comicName={chapter.data?.comicName} chapterName={chapter.data?.title} thumnailUrl={chapter.data?.thumbnail}  showBar={showBar} isLiked={isLiked} toggleLike={handleToggleLike}/>
         <BottomBar handleNextChapter={handleNext} handlePrevChapter={handlePrev} showBar={showBar} setShowChapterListModal={setShowChapterListModal} isLiked={isLiked} toggleLike={handleToggleLike}/>
         <div onClick={goToUp} className={cn('fixed bottom-10 right-10  cursor-pointer hidden md:flex')}>
           <FaCircleChevronUp  className='text-bars-foreground text-4xl hover:scale-120 hover:text-foreground' />

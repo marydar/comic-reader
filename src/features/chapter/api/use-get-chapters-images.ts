@@ -31,7 +31,7 @@ import { usePaginatedQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 
-const BATCH_SIZE = 1;
+const BATCH_SIZE = 5;
 
 interface useGetChaptersImagesProps {
   chapterId?: Id<"chapters">;

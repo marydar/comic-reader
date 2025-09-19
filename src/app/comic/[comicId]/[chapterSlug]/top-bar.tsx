@@ -9,6 +9,7 @@ import AutoScroll from './auto-scroll';
 interface Props {
     comicName: string;
     chapterName: string;
+    thumnailUrl: string |null;
     handleGoToComic: () => void;
     // autoScrollDown: () => void;
     isLiked: boolean | null;
@@ -17,7 +18,7 @@ interface Props {
     
   
 }
-export default function TopBar({comicName, chapterName, handleGoToComic, showBar, isLiked, toggleLike}: Props) {
+export default function TopBar({comicName, chapterName,thumnailUrl, handleGoToComic, showBar, isLiked, toggleLike}: Props) {
     const [autoScroll, setAutoScroll] = useState(false);
             const autoScrollDown = () => {
                 setAutoScroll(!autoScroll)
@@ -28,7 +29,7 @@ export default function TopBar({comicName, chapterName, handleGoToComic, showBar
             <AutoScroll show={autoScroll}/>
             <div className='flex items-center justify-start gap-4  w-[800px] h-full  p-4 relative'>
                 <div onClick={handleGoToComic} className='cursor-pointer'>
-                <Image src={my_image} alt="" className='h-8 w-8 md:h-10 md:w-10 rounded-full object-cover' />
+                <img src={thumnailUrl ? thumnailUrl : undefined} alt="" className='w-[40px] h-[40px] rounded-full' />
                 </div>
                 <div className='flex flex-col items-start justify-center'>
                     <p className='text-[16px] md:text-[20px] text-forground'>{comicName}</p>
