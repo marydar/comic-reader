@@ -48,8 +48,8 @@ useEffect(() => {
 
 console.log("curent user", currentUser)
 if(!currentUser.data) return 
-if(isLoadingPlaylistsWithComic) return <div>loading playlists</div>
-if(!playlistsWithComic) return <div>no playlists</div>
+if(isLoadingPlaylistsWithComic) return 
+if(!playlistsWithComic) return 
 
 
 

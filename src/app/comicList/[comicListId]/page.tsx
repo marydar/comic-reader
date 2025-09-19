@@ -63,16 +63,16 @@ const ComicListPage= () => {
         sortBy: selectedSort as "views" | "date" | "subscriptions" | "names" ?? "views",
         playlistId: playlistId as Id<"playlists">,
     });
-    if(isLoading) return <Loader/>
-    if(!paginatedData?.comics) return <div>no data</div>
-    const invalidPage = currentPage < 1 || currentPage > paginatedData.totalPages;
-    if(paginatedData.comics.length === 0){
+    // if(isLoading) return <Loader/>
+    // if(!paginatedData?.comics) return <div>no data</div>
+    const invalidPage = currentPage < 1 || paginatedData &&  currentPage > paginatedData?.totalPages;
+    if(paginatedData?.comics.length === 0){
       
       
       // router.push(`/browse?`);
     }
 
-    if(invalidPage && paginatedData.comics.length !== 0){
+    if(invalidPage && paginatedData?.comics.length !== 0){
       return (
         <div className='flex justify-center items-center w-full h-[80vh]'>
           <div className='flex flex-col justify-center items-center'>
@@ -117,10 +117,11 @@ const ComicListPage= () => {
     })
     }
 
-    const comics = (paginatedData.comics ?? []).map((comic) => ({
+    const comics = (paginatedData?.comics ?? []).map((comic) => ({
         _id: comic._id,
         title: comic.title,
         thumbnail: comic.thumbnail,
+        views: comic.views,
         description: comic.description,
         genres: comic.genres,
          // safe fallback
@@ -212,17 +213,24 @@ const ComicListPage= () => {
 
               </div>
           </div>
-          <ComicList
-          comics={comics}
-          totalPages={paginatedData.totalPages}
-          selectedGenres={selectedGenres}
-          selectedSort={selectedSort}
-          currentPage={currentPage}
-          searchValue={searchValue}
-          handleSearch={handleSearch}
-          handleFilter={handleFilter}
-          handlePageChange={handlePageChange}
-          />
+          <div>
+            {isLoading && <ComicListSkeleton/>}
+                     {!isLoading && paginatedData  && (
+                       <ComicList
+                       comics={comics}
+                       totalPages={paginatedData.totalPages}
+                       selectedGenres={selectedGenres}
+                       selectedSort={selectedSort}
+                       currentPage={currentPage}
+                       searchValue={searchValue}
+                       handleSearch={handleSearch}
+                       handleFilter={handleFilter}
+                       handlePageChange={handlePageChange}
+                       />
+
+                     )
+                    }
+          </div>
       </>
       ) }
       </div>

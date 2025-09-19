@@ -47,7 +47,7 @@ export const removeChapter = mutation({
     if(!chapter) throw new Error("Chapter not found");
     const chapterComicId = chapter.comicId;
     const chapterComic = await ctx.db.get(chapterComicId);
-    if(!chapterComic) throw new Error("Chapter not found");
+    if(!chapterComic) throw new Error("comic not found");
     const chapterComicCreatorId = chapterComic.creatorId;
     if(chapterComicCreatorId !== authUserId) throw new Error("Not authorized");
     await ctx.db.delete(args.chapterId);

@@ -31,10 +31,12 @@ interface ChapterListProps {
     canLoadMore?:boolean
     comicId: Id<"comics">;
     isModal?:boolean
+    handleEditChapter: (chapterId: string) => void;
+    handleDeleteChapter: (chapterId: string) => void;
 }
 
 
-export default function ChapterList({chapters, numberOfChapters, handleAddNewChapter, userIsCreator, sortOption, setSortOption, loadMore, isLoadingMore, canLoadMore, comicId, isModal}: ChapterListProps) {
+export default function ChapterList({chapters, numberOfChapters, handleAddNewChapter, userIsCreator, sortOption, setSortOption, loadMore, isLoadingMore, canLoadMore, comicId, isModal, handleEditChapter, handleDeleteChapter}: ChapterListProps) {
     const toggleSortOption = () => {
       if(sortOption === "desc"){
         setSortOption("asc")
@@ -66,7 +68,7 @@ export default function ChapterList({chapters, numberOfChapters, handleAddNewCha
               {(numberOfChapters === 0 || numberOfChapters === undefined) && <p className='text-[12px] md:text-[14px] text-foreground/70 p-4 text-center'>no chapters available</p>}
               {chapters.map((chapter) => (
                 
-                <ChapterCard key={chapter._id} _id={chapter._id} title={chapter.title} views={230} likes={230} order={chapter.order} createdAt={chapter.createdAt} thumbnail={chapter.thumbnail} comicId={comicId} isSeen={chapter.isSeen} numberOfLikes={chapter.numberOfLikes}/>
+                <ChapterCard key={chapter._id} _id={chapter._id} title={chapter.title} views={230} likes={230} order={chapter.order} createdAt={chapter.createdAt} thumbnail={chapter.thumbnail} comicId={comicId} isSeen={chapter.isSeen} numberOfLikes={chapter.numberOfLikes} userIsCreator={userIsCreator} handleEditChapter={handleEditChapter} handleDeleteChapter={handleDeleteChapter}/>
               ))}
                
                <div

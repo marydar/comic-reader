@@ -23,6 +23,86 @@ const setComicGenres = mutation({
     }
   },
 });
+
+export const removeComic = mutation({
+  args: {
+    comicId: v.id("comics"),
+  },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx);
+    if(!authUserId) throw new Error("Not authenticated");
+    const comic = await ctx.db.get(args.comicId);
+    if(!comic) throw new Error("Comic not found");
+    //select  genre items
+    const comicGenres = await ctx.db
+      .query("comicGenres")
+      .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+      .collect();
+    //slect bookmarks
+    const comicBookmark = await ctx.db
+      .query("chapterBookmark")
+      .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+      .unique();
+    //select chapters
+    const comicChapters = await ctx.db
+      .query("chapters")
+      .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+      .collect()
+    //select like and views items
+    let  comicLikes: Doc<"chapterLikes">[] = [];
+    const comicViews: Doc<"chapterViews">[] = [];
+    for(const chapter of comicChapters){
+      comicLikes.push(...await ctx.db
+        .query("chapterLikes")
+        .withIndex("by_chapter", (q) => q.eq("chapterId", chapter._id))
+        .collect()
+      );
+    }
+    for (const like of comicLikes) {
+      await ctx.db.delete(like._id);
+    }
+    for(const chapter of comicChapters){
+      comicViews.push(...await ctx.db
+        .query("chapterViews")
+        .withIndex("by_chapter", (q) => q.eq("chapterId", chapter._id))
+        .collect()
+      );
+    }
+    //select subscriptions
+    const comicSubscriptions = await ctx.db
+      .query("subscriptions")
+      .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))
+      .collect();
+    
+    //removes all selected items
+    for (const subscription of comicSubscriptions) {
+      await ctx.db.delete(subscription._id);
+    }
+    for (const chapter of comicChapters) {
+      if(comicBookmark){
+        await ctx.db.delete(comicBookmark._id);
+      }
+      await ctx.db.delete(chapter._id);
+    }
+    for (const genre of comicGenres) {
+      await ctx.db.delete(genre._id);
+    }
+    for (const like of comicLikes) {
+      await ctx.db.delete(like._id);
+    }
+    for (const view of comicViews) {
+      await ctx.db.delete(view._id);
+    }
+    for (const like of comicLikes) {
+      await ctx.db.delete(like._id);
+    }
+    for (const v of comicViews) {
+      await ctx.db.delete(v._id);
+    }
+    await ctx.db.delete(comic._id);
+    return comic._id;
+  },
+});
 export const createComic = mutation({
   args: {
     title: v.string(),
@@ -104,7 +184,7 @@ export const getComicById = query({
   },
   handler: async (ctx, args) => {
     const comic = await ctx.db.get( args.comicId);
-    if (!comic) throw new Error("Comic not found");
+    if (!comic) return null
     const comicGenres = await ctx.db
       .query("comicGenres")
       .withIndex("by_comic", (q) => q.eq("comicId", args.comicId))

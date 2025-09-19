@@ -3,7 +3,7 @@
 import React from 'react'
 import { useComicId } from '@/hooks/use-comic-id'
 import { useGetComicById } from '@/features/comic/api/use-get-comic-by-id'
-import { Bookmark, Loader, PlusCircle, User } from 'lucide-react'
+import { Bookmark, Edit, Loader, PlusCircle, Trash2Icon, TriangleAlert, User } from 'lucide-react'
 import GenreButton from '@/components/genre-button'
 import { FaSubscript } from 'react-icons/fa'
 import { Eye } from 'lucide-react'
@@ -25,7 +25,7 @@ import { useGetNumberOfChapters } from '@/features/comic/api/use-get-comic-numbe
 import { useGetViews } from '@/features/comic/api/use-get-comic-views'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Play } from 'next/font/google'
 import ChapterCard from '@/features/chapter/components/chapterCard'
 import ComicGridRowSkeleton from '@/features/comic/components/comic-grid-row-skeleton'
@@ -35,6 +35,9 @@ import { Id } from '../../../../convex/_generated/dataModel'
 import { useGetChapters } from '@/features/chapter/api/use-get-chapters'
 import { useGetNumberOfSubscriptions } from '@/features/subscription/api/use-get-number-of-subscription'
 import { describe } from 'node:test'
+import { useRemoveChapter } from '@/features/chapter/api/use-remove-chapter'
+import { useRemoveComic } from '@/features/comic/api/use-remove-comic'
+import { isComicId } from '@/hooks/is-comic-id'
 
 type Chapter = {
   _id: Id<"chapters">;
@@ -48,20 +51,27 @@ type Chapter = {
 
 const ComicPage = () => {
   const router = useRouter()
-  const comicId = useComicId()
+  const params = useParams<{ comicId: string }>();
+  const {comicId: rawId} = params;
   const currentUser = useCurrentUser()
-  const {data, isLoading} = useGetComicById({comicId})
+   const { data, isLoading } = useGetComicById({
+    comicId:rawId
+  });
+  
+  const comicId = useComicId()
   const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState(false)
   const {data:allComics, isLoading:isLoadingAllComics} = useGetAllComics()
-  const {data:isComicSubscribed, isLoading:isLoadingIsComicSubscribed} = useIsSubscribedByUser({userId:currentUser?.data?._id, comicId})
+  const {data:isComicSubscribed, isLoading:isLoadingIsComicSubscribed} = useIsSubscribedByUser({userId:currentUser?.data?._id, comicId:data?._id})
   const {mutate:createSubscription, isPending:isPendingCreateSubscription} = useCreateSubscription()
   const {mutate:removeSubscription, isPending:isPendingRemoveSubscription} = useRemoveSubscription()
-  const {data:playlistsWithComic, isLoading:isLoadingPlaylistsWithComic} = useGetPlaylistsByComicId({comicId})
-  const {data:numberOfViews, isLoading:isLoadingNumberOfViews} = useGetViews({comicId})
-  const {data:numberOfSubscriptions, isLoading:isLoadingSubscriptions} = useGetNumberOfSubscriptions({comicId})
-  const {data:numberOfChapters, isLoading:isLoadingNumberOfChapters} = useGetNumberOfChapters({comicId})
+  const {data:playlistsWithComic, isLoading:isLoadingPlaylistsWithComic} = useGetPlaylistsByComicId({comicId:data?._id})
+  const {data:numberOfViews, isLoading:isLoadingNumberOfViews} = useGetViews({comicId:data?._id})
+  const {data:numberOfSubscriptions, isLoading:isLoadingSubscriptions} = useGetNumberOfSubscriptions({comicId:data?._id})
+  const {data:numberOfChapters, isLoading:isLoadingNumberOfChapters} = useGetNumberOfChapters({comicId:data?._id})
+  const {mutate:removeChapter, isPending:isPendingRemoveChapter} = useRemoveChapter()
+  const {mutate:removeComic, isPending:isPendingRemoveComic} = useRemoveComic()
   const [sortOption, setSortOption] = useState<"asc" | "desc">("desc");
-  const {results:comicChapters, status, loadMore} = useGetChapters({comicId, sortOption})
+  const {results:comicChapters, status, loadMore} = useGetChapters({comicId:data?._id, sortOption})
   const [isSubscribed, setIsSubscribed] = useState(false);
   useEffect(() => {
     if (currentUser?.data) {
@@ -112,6 +122,39 @@ const ComicPage = () => {
         router.push(`/comic/${comicId}/ch_${data.bookmarkChapterOrder}`)
       }
     }
+    const handleRemoveComic = async () => {
+      if(!currentUser.data || !data) return
+      if(currentUser.data?._id !== data.creatorId) return
+      router.push(`/home`)
+      await removeComic({
+        comicId : comicId 
+      },{
+        onSuccess: (data)=>{
+          toast.success("comic removed")
+        },
+        onError: (error)=>{
+          toast.error("could not remove comic")
+        },
+      }
+      )
+    }
+    const handleEditChapter = (chapterId: string) => {}
+    const handleDeleteChapter = async (chapterId: string) => {
+      console.log("handleDeleteChapter")
+      if(!currentUser.data || !data) return
+      if(currentUser.data?._id !== data.creatorId) return
+      await removeChapter({
+        chapterId : chapterId as Id<"chapters">,
+      },{
+        onSuccess: (data)=>{
+          toast.success("chapter removed")
+        },
+        onError: (error)=>{
+          toast.error("could not remove chapter")
+        },
+      }
+      )
+    }
     const handleAddNewChapter = () => {
       if(!currentUser.data || !data) return
       if(currentUser.data?._id !== data.creatorId) return
@@ -146,9 +189,20 @@ const ComicPage = () => {
         }
       )}
     }
+    
   return (
     <div className='flex justify-center w-full'>
       {(isLoading) && <ComicPageSkeleton/>}
+      {!isLoading && !data && (
+        <>
+          <div className='flex justify-center items-center w-full h-[80vh]'>
+            <div className='flex flex-col justify-center items-center'>
+              <TriangleAlert className='text-foreground text-4xl'/>
+              page not found
+            </div>  
+          </div>
+        </>
+      )}
       {!isLoading && data && (
       <>
       <AddToPlaylistModal open={showAddToPlaylistModal} onOpenChange={setShowAddToPlaylistModal}/>
@@ -156,7 +210,15 @@ const ComicPage = () => {
         <div className='flex w-full flex-col md:flex-row gap-4'>
           <img src={data?.thumbnail ? data?.thumbnail : undefined} alt={"comic1"} className='object-cover  h-full rounded-3xl w-[400px] md:w-[300px] lg:w-[350px] p-4'/>
           <div className='flex flex-col px-4 gap-2  '>
+                <div className='flex gap-2 items-center justify-start'>
                 <p className='text-[18px] md:text-[28px] text-foreground '>{data.title}</p>
+                  {currentUser.data && currentUser.data?._id === data.creatorId && (
+                    <div  className='flex gap-2 max-w-[50px] '>
+                      <Edit  className='text-foreground/80 text-2xl hover:scale-125 hover:text-foreground cursor-pointer'/>
+                      <Trash2Icon onClick={handleRemoveComic} className='text-foreground/80 text-2xl hover:scale-125 hover:text-foreground cursor-pointer'/>
+                    </div>
+                  )}
+                </div>
                 <p className='text-[12px] md:text-[14px] text-foreground/80 '>Author: {data.author}</p>
                 <div className='flex gap-2 items-center justify-start'>
                 <p className='text-[12px] md:text-[14px] text-primary/70 '>Published by:</p>
@@ -208,7 +270,7 @@ const ComicPage = () => {
                 </div>
               </div>
         </div>
-        <ChapterList chapters={chapters}  numberOfChapters={numberOfChapters} handleAddNewChapter={handleAddNewChapter} userIsCreator={currentUser.data?._id === data.creatorId} sortOption={sortOption} setSortOption={setSortOption} loadMore={loadMore} isLoadingMore={status === "LoadingMore"} canLoadMore={status === "CanLoadMore"} comicId={comicId}/>
+        <ChapterList chapters={chapters}  numberOfChapters={numberOfChapters ?? 0} handleAddNewChapter={handleAddNewChapter} userIsCreator={currentUser.data?._id === data.creatorId} sortOption={sortOption} setSortOption={setSortOption} loadMore={loadMore} isLoadingMore={status === "LoadingMore"} canLoadMore={status === "CanLoadMore"} comicId={comicId} handleEditChapter={handleEditChapter} handleDeleteChapter={handleDeleteChapter}/>
         <div className=' py-1 md:py-8 flex flex-col  h-[300px] md:h-[600px]'>
             <p className='md:px-12 px-4  text-foreground text-l md:text-2xl text-left'>You may also like</p>
             <div className='p-1 md:p-4 flex justify-center'>
