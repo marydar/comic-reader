@@ -12,6 +12,7 @@ type Comic = {
   _id: Id<"comics">;
   title: string;
   thumbnail: string | null;
+  views: number;
   genres: string[];
   description: string;
 };
@@ -50,7 +51,7 @@ export default function ComicGridRow({ comics }: ComicGridRowProps) {
                 key={comic._id}
                 _id={comic._id}
                 title={comic.title}
-                views={230}
+                views={comic.views}
                 thumbnail={comic.thumbnail}
                 genres={comic.genres}
                 description={comic.description}

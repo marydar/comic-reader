@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export default function AutoScroll({show}: {show: boolean}) {
+export default function AutoScrollMD({show}: {show: boolean}) {
   const [speed, setSpeed] = useState(20); // default speed (pixels/second)
   const requestRef = useRef<number | null>(null);
   const lastTime = useRef<number  | null>(null);
@@ -39,12 +39,11 @@ export default function AutoScroll({show}: {show: boolean}) {
         boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
         fontFamily: "sans-serif",
         zIndex: 9999,
-        
       }}
-      className={cn("bg-bars/90 text-primary text-sm  items-center justify-center gap-2 w-[300px] fixed top-20 right-10 ", show && "flex md:hidden ", !show && "hidden")} 
+      className={cn("bg-bars/90 text-primary text-sm items-center justify-center gap-2 w-[300px] fixed  md:bottom-30 md:right-10 ",show && "hidden md:flex ", !show && "hidden ")} 
     >
       <label style={{ fontSize: 14 }}>
-        Speedss: {speed}px/s
+        Speed: {speed}px/s
         <input
           type="range"
           min="0"

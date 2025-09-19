@@ -85,6 +85,11 @@ export const getAllComics = query({
         thumbnail: await ctx.storage.getUrl(comic.thumbnail),
         header: await ctx.storage.getUrl(comic.header),
         genres: await ctx.db.query("comicGenres").withIndex("by_comic", (q) => q.eq("comicId", comic._id)).collect().then((genres)=>genres.map((g)=>g.genre)),
+        views: await ctx.db
+          .query("chapters")
+          .withIndex("by_comic", (q) => q.eq("comicId", comic._id))
+          .collect()
+          .then((chapters)=>chapters.reduce((acc, chapter)=>acc+chapter.views, 0)),
       }))
     );
     
@@ -248,6 +253,11 @@ export const getComics = query({
         thumbnail: await ctx.storage.getUrl(comic.thumbnail),
         header: await ctx.storage.getUrl(comic.header),
         genres: await ctx.db.query("comicGenres").withIndex("by_comic", (q) => q.eq("comicId", comic._id)).collect().then((genres)=>genres.map((g)=>g.genre)),
+        views: await ctx.db
+          .query("chapters")
+          .withIndex("by_comic", (q) => q.eq("comicId", comic._id))
+          .collect()
+          .then((chapters)=>chapters.reduce((acc, chapter)=>acc+chapter.views, 0)),
       }))
     );
     return {
@@ -281,6 +291,12 @@ export const getPopularComicsByGenre = query({
         thumbnail: await ctx.storage.getUrl(comic.thumbnail),
         header: await ctx.storage.getUrl(comic.header),
         genres: await ctx.db.query("comicGenres").withIndex("by_comic", (q) => q.eq("comicId", comic._id)).collect().then((genres)=>genres.map((g)=>g.genre)),
+        views: await ctx.db
+          .query("chapters")
+          .withIndex("by_comic", (q) => q.eq("comicId", comic._id))
+          .collect()
+          .then((chapters)=>chapters.reduce((acc, chapter)=>acc+chapter.views, 0)),
+          
       }))
     );
 

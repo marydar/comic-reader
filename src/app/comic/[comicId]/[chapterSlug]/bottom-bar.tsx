@@ -10,17 +10,26 @@ import { GoZoomIn } from 'react-icons/go';
 import { BiMouse } from 'react-icons/bi';
 import { FaRegComment } from 'react-icons/fa6';
 import { cn } from "@/lib/utils";
+import { HiHeart } from 'react-icons/hi2';
+import AutoScroll from './auto-scroll';
+import { useState } from 'react';
+import AutoScrollMD from './auto-scroll-md';
 interface Props {
     handleNextChapter: () => void;
     handlePrevChapter: () => void;
-    autoScrollDown: () => void;
+    // autoScrollDown: () => void;
     setShowChapterListModal: (show: boolean) => void;
     isLiked: boolean | null;
     toggleLike: () => void;
     showBar: boolean;
 }
 
-export default function BottomBar({handleNextChapter, handlePrevChapter,autoScrollDown, showBar, setShowChapterListModal, isLiked, toggleLike}: Props) {
+export default function BottomBar({handleNextChapter, handlePrevChapter, showBar, setShowChapterListModal, isLiked, toggleLike}: Props) {
+    const [autoScroll, setAutoScroll] = useState(false);
+    const autoScrollDown = () => {
+    setAutoScroll(!autoScroll)
+    
+  }
   return (
     <div onClick={(e)=>{e.stopPropagation()}} className={cn('justify-center items-center w-full h-16  bg-bars/80 bottom-0 fixed backdrop-blur-sm z-50 flex', !showBar && 'hidden')}>
         <div className='flex items-center justify-center w-full md:w-[1200px] h-full'>
@@ -32,11 +41,11 @@ export default function BottomBar({handleNextChapter, handlePrevChapter,autoScro
                  <div className='items-center justify-center absolute left-0 p-4 hidden md:flex'>
                     <div className='flex justify-center items-center gap-8'>
                         {isLiked ? (
-                            <HeartMinus onClick={toggleLike} className='text-bars-foreground text-4xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
+                            <HiHeart onClick={toggleLike} className='text-bars-foreground text-3xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
 
                         ):
                         (
-                            <HeartPlus onClick={toggleLike} className='text-bars-foreground text-4xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
+                            <Heart onClick={toggleLike} className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                         )
                         }
                         <FaRegComment className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
@@ -55,6 +64,7 @@ export default function BottomBar({handleNextChapter, handlePrevChapter,autoScro
                 <div className='flex justify-center items-center gap-8'>
                     <GoZoomIn className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                     <BiMouse className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' onClick={autoScrollDown}/>
+                    <AutoScrollMD show={autoScroll}/>
                 </div>      
                 </div>
 

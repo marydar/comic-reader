@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { Id } from '../../../../convex/_generated/dataModel'
 import { cn } from "@/lib/utils";
 import { Heart } from 'lucide-react'
+import { BiSolidHeartSquare } from 'react-icons/bi'
+import { HiHeart } from 'react-icons/hi2'
 interface ChapterCardProps {
     _id: string;
     title: string;
@@ -33,7 +35,7 @@ export default function ChapterCard({_id, title, views, likes,order, createdAt, 
       </Link>
         <div className='flex absolute right-5 gap-4 items-center justify-center'>
           <p className='text-[8px] md:text-[12px] text-foreground/80 '>{numberOfLikes}</p>
-          <Heart className='text-foreground/80 text-xl'/>
+          <HiHeart className='text-foreground/80 text-xl'/>
         </div>
     </div>
   )

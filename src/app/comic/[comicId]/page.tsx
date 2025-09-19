@@ -78,6 +78,7 @@ const ComicPage = () => {
       _id: comic._id,
       title: comic.title,
       thumbnail: comic.thumbnail,
+      views: comic.views,
       description: comic.description,
       genres: comic.genres,
        // safe fallback

@@ -5,6 +5,7 @@ import {  PlusCircle } from 'lucide-react';
 import { HiArrowsUpDown } from 'react-icons/hi2';
 import { Loader } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { BiUpArrowCircle } from 'react-icons/bi';
 type Chapter = {
   _id: Id<"chapters">;
   title: string;
@@ -51,8 +52,8 @@ export default function ChapterList({chapters, numberOfChapters, handleAddNewCha
             </div>  
 
             <div className='px-4' onClick={toggleSortOption}>
-                {sortOption === "desc" && <HiArrowsUpDown className='text-foreground text-2xl cursor-pointer'/>}
-                {sortOption === "asc" && <HiArrowsUpDown className='text-foreground text-2xl rotate-90 cursor-pointer'/>} 
+                {sortOption === "desc" && <BiUpArrowCircle className='text-foreground text-2xl cursor-pointer'/>}
+                {sortOption === "asc" && <BiUpArrowCircle className='text-foreground text-2xl rotate-180 cursor-pointer'/>} 
             </div>
             </div>
             {userIsCreator && (
