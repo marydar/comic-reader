@@ -114,12 +114,12 @@ export default function PlaylistList({ playlists, totalPages, currentPage,select
             </div>
             {/* comis */}
             <div className='flex w-full flex-col gap-4 py-4 '>
-                <p className='text-[14px] md:text-[24px] text-foreground text-left'>Filtered Comic Lists</p>
+                <p className='text-[14px] md:text-[24px] text-foreground text-left'>Filtered comic cists</p>
                 <Separator/>
                 {playlists?.length === 0 && (
                                 <div className='flex justify-center items-center gap-2 text-primary text-center'>
                                     <TriangleAlert/>
-                                    No ComicLists found
+                                    No comic lists found
                                 </div>
                 )}
                 <div className='flex w-full flex-col gap-4 py-4  justify-center items-center'>

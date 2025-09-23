@@ -48,7 +48,7 @@ export default function BottomBar({handleNextChapter, handlePrevChapter, showBar
                             <Heart onClick={toggleLike} className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                         )
                         }
-                        <FaRegComment className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
+                        <FaRegComment className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground opacity-50' />
                     </div>
                 </div>
 
@@ -62,7 +62,7 @@ export default function BottomBar({handleNextChapter, handlePrevChapter, showBar
 
                 <div className='items-center justify-center absolute right-0 p-4 hidden md:flex'>
                 <div className='flex justify-center items-center gap-8'>
-                    <GoZoomIn className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
+                    <GoZoomIn className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground opacity-50' />
                     <BiMouse className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' onClick={autoScrollDown}/>
                     <AutoScrollMD show={autoScroll}/>
                 </div>      

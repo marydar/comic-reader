@@ -29,14 +29,14 @@ export default function TopBar({comicName, chapterName,thumnailUrl, handleGoToCo
             <AutoScroll show={autoScroll}/>
             <div className='flex items-center justify-start gap-4  w-[800px] h-full  p-4 relative'>
                 <div onClick={handleGoToComic} className='cursor-pointer'>
-                <img src={thumnailUrl ? thumnailUrl : undefined} alt="" className='w-[40px] h-[40px] rounded-full' />
+                <img src={thumnailUrl ? thumnailUrl : undefined} alt="" className='max-w-[40px] min-w-[40px] max-h-[40px] rounded-full' />
                 </div>
-                <div className='flex flex-col items-start justify-center'>
-                    <p className='text-[16px] md:text-[20px] text-forground'>{comicName}</p>
+                <div className='flex flex-col items-start justify-center w-[200px] md:w-[500px] truncate'>
+                    <p className='text-[14px] md:text-[20px] text-forground'>{comicName}</p>
                     <p className='text-[10px] md:text-[14px] text-foreground/80'>{chapterName}</p>
                 </div>
                 <div className='items-center justify-center absolute right-0 p-2 hidden md:flex'>
-                    <FaFileLines className='text-bars-foreground text-[24px] cursor-pointer hover:scale-120 hover:text-foreground' />
+                    <FaFileLines className='text-bars-foreground text-[24px] cursor-pointer hover:scale-120 hover:text-foreground opacity-50' />
                 </div>
             </div>
             

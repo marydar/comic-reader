@@ -57,14 +57,14 @@ export default function UserPageNavbar() {
                         <MdLibraryAddCheck className=' text-2xl'/>
                         <p className='text-[12px] md:text-[14px] '>Saved Comic Lists</p>
                     </div>
-                    <div className={cn('flex flex-col md:flex-row  gap-2 items-center justify-center text-primary hover:bg-primary/40 cursor-pointer p-2 rounded-lg hover:border-1 hover:border-primary', isActive === "followers" && "bg-primary text-primary-foreground")}>
+                    {/* <div className={cn('flex flex-col md:flex-row  gap-2 items-center justify-center text-primary hover:bg-primary/40 cursor-pointer p-2 rounded-lg hover:border-1 hover:border-primary', isActive === "followers" && "bg-primary text-primary-foreground")}>
                         <UserCheck className=' text-2xl'/>
                         <p className='text-[12px] md:text-[14px] '>Followed users</p>
                     </div>
                     <div className={cn('flex flex-col md:flex-row  gap-2 items-center justify-center text-primary hover:bg-primary/40 cursor-pointer p-2 rounded-lg hover:border-1 hover:border-primary', isActive === "followings" && "bg-primary text-primary-foreground")}>
                         <Users className=' text-2xl'/>
                         <p className='text-[12px] md:text-[14px]  '>Following users</p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
   )

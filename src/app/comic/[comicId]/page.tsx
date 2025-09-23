@@ -115,7 +115,7 @@ const ComicPage = () => {
     }
     const handlePublisher = (userId: string|undefined) => {
       if(!userId) return
-      router.push(`/user/${userId}`)
+      router.push(`/user/${userId}/account`)
     }
     const handleBookmark = () =>{
       if(data?.bookmarkChapterOrder){

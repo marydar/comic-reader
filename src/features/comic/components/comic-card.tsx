@@ -12,6 +12,8 @@ interface ComicCardProps {
     genres: string[];
     description: string;
 }
+//p-1 px-4 md:p-4 md:px-8 gap-0
+//px-0 md:px-2
 export default function ComicCard({_id,title, views, thumbnail, genres, description}: ComicCardProps) {
   return (
     <>
@@ -20,9 +22,11 @@ export default function ComicCard({_id,title, views, thumbnail, genres, descript
             <img src={thumbnail? thumbnail: undefined} alt={"comic1"} className='w-full  object-cover h-[200px] md:h-[320px] rounded-t-2xl rounded-b-0'/>
             <Tooltip>
               <TooltipTrigger asChild>
-                  <div className='flex flex-col justify-between w-full p-1 px-4 md:p-4 md:px-8 gap-0'>
-                      <p className='text-[10px] md:text-[18px] text-primary-foreground text-center truncate px-0 md:px-2'>{title}</p>
+                  <div className='flex  justify-center items-center w-full h-[40px] md:h-[80px] px-4 md:px-8'>
+                    <div className='flex flex-col  justify-center  w-full'>
+                      <p className='text-[10px] md:text-[16px] text-primary-foreground text-center truncate '>{title}</p>
                       <p className='text-[8px] md:text-[12px] text-primary-foreground/80 text-center'>{views} views</p>
+                    </div>
                   </div>
               </TooltipTrigger>
               <TooltipContent className='bg-bars/40 backdrop-blur-lg rounded-2xl min-w-[120px] max-w[120px]  md:min-w-[220px] md:max-w-[220px] h-[180px] md:h-[300px]'>

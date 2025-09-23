@@ -37,7 +37,7 @@ export default function TopMenu({autoScrollDown, isLiked, toggleLike}: Props) {
                     }<span>Like</span>
                     </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='h-10  flex '>
+                <DropdownMenuItem className='h-10  flex opacity-50 '>
                     <FaRegComment className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                     <span>Comment</span>
                 </DropdownMenuItem>
@@ -50,7 +50,7 @@ export default function TopMenu({autoScrollDown, isLiked, toggleLike}: Props) {
                 <DropdownMenuItem className='h-10  flex flex-col'>
                     <GrCaretNext  className='text-bars-foreground text-3xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                 </DropdownMenuItem> */}
-                <DropdownMenuItem className='h-10  flex '>
+                <DropdownMenuItem className='h-10  flex opacity-50'>
                     <GoZoomIn className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                     <span>Zoom</span>
                 </DropdownMenuItem>
@@ -58,7 +58,7 @@ export default function TopMenu({autoScrollDown, isLiked, toggleLike}: Props) {
                     <BiMouse className='text-bars-foreground text-2xl text-center cursor-pointer hover:scale-120 hover:text-foreground' />
                     <span>Autoscroll</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='h-10  flex '>
+                <DropdownMenuItem className='h-10  flex opacity-50'>
                     <FaFileLines className='text-bars-foreground text-[24px] cursor-pointer hover:scale-120 hover:text-foreground' />
                     <span>Preview</span>
                 </DropdownMenuItem>
