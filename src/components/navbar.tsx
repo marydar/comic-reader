@@ -126,15 +126,14 @@ export function Navbar() {
                 </DropdownMenuItem>
                     
                     {data &&
-                <DropdownMenuItem className='h-10  text-primary flex flex-col'>
+                <DropdownMenuItem className='h-10  text-primary flex flex-col' asChild>
                         <DropdownMenu modal={false}>
                         <DropdownMenuTrigger className='outline-none relative'>
-                            <div className="flex items-center cursor-pointer">
-                                <ChevronDown className="text-primary-foreground cursor-pointer text-xl" />
-                                <p className="text-[14px] px-2">Publish </p>
-                            </div>
+                                {/* <ChevronDown className="text-primary-foreground cursor-pointer text-xl" /> */}
+                                <p className="text-[14px] p-2">Publish </p>
+                            
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="center" side="bottom" className='w-40 mr-4 mt-4  text-primary'>
+                        <DropdownMenuContent align="center" side="bottom" className='w-[50vw] mt-5 bg-background/80 text-primary flex md:hidden flex-col backdrop-blur-md'>
                             <DropdownMenuItem className='h-10  text-primary flex flex-col'>
                                 <Link className="text-[12px] p-2" href="/publishComic">Publish new Comic</Link>
                                
@@ -145,11 +144,11 @@ export function Navbar() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </DropdownMenuItem>
-}               
+}
+                <DropdownMenuItem className='h-15  text-primary flex flex-col' >
                     
-                <DropdownMenuItem className=' text-primary flex flex-col items-center justify-center'>
-                    <UserButton variant="primary" />
-                    <p className="px-2">User</p>
+                        <UserButton variant="primary" />
+                    
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

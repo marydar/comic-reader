@@ -59,8 +59,10 @@ export const UserButton = ({variant}: {variant?: "primary" | "background"}) => {
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" side="bottom" className='w-60 bg-background text-primary'>
-                <DropdownMenuItem onClick={()=>{handleProfile()}} className='h-10 bg-background text-primary cursor-pointer'>
-                    <UserCircle className='size-4 mr-2 text-center'/>{userName}
+                <DropdownMenuItem  className='h-10 bg-background text-primary cursor-pointer' onClick={handleProfile} >
+                   
+                    <UserCircle  className='size-4 mr-2 text-center'/>{userName}
+                    
                 </DropdownMenuItem>
                 
                     {!data && (

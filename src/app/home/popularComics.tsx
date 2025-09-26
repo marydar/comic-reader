@@ -43,7 +43,7 @@ const PopularComics = () => {
           <div className='flex overflow-x-scroll gap-4 p-3 scrollbar'>
             {
               chanegedOrderComics.map((comic, index) => (
-                <div className='bg-blue-950  relative rounded-3xl md:max-w-[1800px] md:min-w-[1800px] max-w-[320px] min-w-[320px]'>
+                <div key={comic?.id} className='bg-blue-950  relative rounded-3xl md:max-w-[1800px] md:min-w-[1800px] max-w-[320px] min-w-[320px]'>
                     <Link href={`/comic/${comic?.id}`}>
                     <img src={comic?.header ? comic?.header : undefined} alt={"comic1"} className='w-full h-full  object-cover  rounded-3xl'/>
                     </Link>
