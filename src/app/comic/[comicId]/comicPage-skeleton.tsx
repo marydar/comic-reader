@@ -30,7 +30,7 @@ export default function ComicPageSkeleton() {
            
             </div>
             
-            <div className='flex flex-col gap-4 mt-4 justify-center items-center px-4  scollbar'>              
+            <div className='flex flex-col gap-4 mt-4 justify-center items-center px-4  scrollbar'>              
                {Array(7).fill(0).map((_, index) => (
                     <div key={index} className='w-full h-[70px]  md:h-[70px] bg-primary/40 rounded-2xl cursor-grab'>
                     </div>

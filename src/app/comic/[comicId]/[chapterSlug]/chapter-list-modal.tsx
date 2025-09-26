@@ -61,7 +61,7 @@ export default function ChapterListModal({ open, onOpenChange }: { open: boolean
 
           </div>
         </DialogHeader>
-        <div className='grid grid-cols-1 gap-4 mt-4 justify-center items-center px-4 overflow-y-scroll scollbar max-h-[300px] md:max-h-[500px] w-[290px] md:w-[200px] lg:w-[450px]'>
+        <div className='grid grid-cols-1 gap-4 mt-4 justify-center items-center px-4 overflow-y-scroll scrollbar max-h-[300px] md:max-h-[500px] w-[290px] md:w-[200px] lg:w-[450px]'>
               {(numberOfChapters === 0 || numberOfChapters === undefined) && <p className='text-[12px] md:text-[14px] text-foreground/70 p-4 text-center'>no chapters available</p>}
               {chapters.map((chapter) => (
                 <ChapterCard key={chapter._id} _id={chapter._id} title={chapter.title} views={230} likes={230} order={chapter.order} createdAt={chapter.createdAt} thumbnail={chapter.thumbnail} comicId={comicId} isSeen={chapter.isSeen} numberOfLikes={chapter.numberOfLikes} userIsCreator={false} handleDeleteChapter={()=>{}} handleEditChapter={()=>{}}/>

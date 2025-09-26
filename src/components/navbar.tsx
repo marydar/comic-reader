@@ -106,7 +106,7 @@ export function Navbar() {
             <DropdownMenuTrigger className='outline-none relative'>
                 <MenuIcon className="text-primary-foreground text-[24px] cursor-pointer md:hidden" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" side="bottom" className='w-[350px] mr-3 mt-5 bg-background/80 text-primary flex md:hidden flex-col backdrop-blur-md'>
+            <DropdownMenuContent align="end" side="bottom" className='w-[100vw] mt-5 bg-background/80 text-primary flex md:hidden flex-col backdrop-blur-md'>
                 <DropdownMenuItem className='h-10  text-primary flex flex-col'>
                     <Link className="text-[14px] px-2" href="/">Home</Link>
                 </DropdownMenuItem>

@@ -64,7 +64,7 @@ export default function ChapterList({chapters, numberOfChapters, handleAddNewCha
                 Add new chapter
               </div>
             )}
-            <div className='grid grid-cols-1 gap-4 mt-4 justify-center items-center px-4 overflow-y-scroll scollbar'>
+            <div className='grid grid-cols-1 gap-4 mt-4 justify-center items-center px-4 overflow-y-scroll scrollbar'>
               {(numberOfChapters === 0 || numberOfChapters === undefined) && <p className='text-[12px] md:text-[14px] text-foreground/70 p-4 text-center'>no chapters available</p>}
               {chapters.map((chapter) => (
                 
